@@ -1,0 +1,65 @@
+<HTML>
+<HEAD>
+<TITLE>tag library - Die tag Klasse</TITLE>
+<META NAME="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="Layout.css">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+<P>jsp &amp; tag library.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="tag.html">prev</A>&nbsp;&nbsp;<A HREF="nested.html">next</A></P>
+<HR SIZE="1">
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100% HEIGHT=70%>
+  <TR> 
+    <TD VALIGN=CENTER><!-- Begin text --> <!-- Begin head --> 
+      <TABLE WIDTH="92%" BORDER="0" CELLSPACING="0" CELLPADDING="0">
+        <TR> 
+          <TD WIDTH="6%" HEIGHT="10" BGCOLOR="#B2C9D8" VALIGN=BOTTOM ALIGN=CENTER> 
+            <H1><FONT SIZE="7" COLOR=WHITE>6</FONT></H1>
+          </TD>
+          <TD WIDTH="94%" VALIGN=BOTTOM BGCOLOR="#F8FAFC"> 
+            <H1>&nbsp;tag und page context</H1>
+          </TD>
+        </TR>
+      </TABLE>
+      <!-- End head --> 
+      <H2>6.1 page context</H2>
+      <P>F&uuml;r jede Request existiert ein <FONT FACE="Courier New, Courier, mono">page 
+        context</FONT>. Durch ihn k&ouml;nnen auf der Server-Seite Objecte erzeugt 
+        und angesprochen werden.</P>
+      <PRE>
+private String jndiName = &quot;Bach&quot;;
+
+
+private Music aMusic;
+
+
+pageContext.<FONT COLOR="#990000">setAttribute</FONT>(jndiName,aMusic,PageContext.SESSION_SCOPE);
+
+aMusic = (Music) pageContext.<FONT COLOR="#990000">getAttribute</FONT>(jndiName);
+</PRE>
+      <P>So k&ouml;nnen unterschiedliche tags mit Hilfe des Names auf ein Object 
+        zugreifen. Bei <FONT FACE="Courier New, Courier, mono">SESSION_SCOPE</FONT> 
+        k&ouml;nnen sich die tags sogar auf unterschiedlichen jsp-Seiten befinden. 
+      </P>
+    </TD>
+  </TR>
+</TABLE>
+<HR SIZE="1">
+<P>jsp &amp; tag library.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="tag.html">prev</A>&nbsp;&nbsp;<A HREF="nested.html">next</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ 
+  back to&nbsp;<A HREF="../../index.html"> a P a g e </A>]</P>
+  
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-11922467-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>  
+  
+</BODY>
+</HTML>

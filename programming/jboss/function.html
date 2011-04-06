@@ -1,0 +1,65 @@
+<HTML>
+<HEAD>
+<TITLE>apage4u - database - Der Aufbau dieser Applikation</TITLE>
+<META name="Content-Type" content="text/html; charset=iso-8859-1">
+<LINK REL="STYLESHEET" type="text/css" href="Layout.css">
+</HEAD>
+<BODY bgcolor="#FFFFFF">
+<P>database .&nbsp;&nbsp;<A HREF="toc.html">Inhalt</A>&nbsp;&nbsp;<A HREF="subject.html">zur&uuml;ck</A>&nbsp;&nbsp;<A HREF="interface.html">weiter</A></P>
+<HR size="1">
+
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100% HEIGHT=70%>
+  <TR> 
+    <TD VALIGN=CENTER><!-- Begin text --> 
+		<TABLE border="0" cellpadding="0" cellspacing="0">
+			<TR><TD valign="bottom" align="left"><IMG src="images/ProgIcon.gif" vspace="3" width="423" height="87" border="0" alt="database"></TD></TR>
+		</TABLE>
+		
+<H3>2.&nbsp; Der Aufbau dieser Applikation</H3>    
+
+<P class="text">
+An dieser Stelle soll auf den Aufbau und auch die Verwendung des im Rahmen dieses Projektes programmierten Paketes <B class="code">de.apage4u.database</B> n&auml;her beschrieben werden. Weitere Informationen sind der HTML-Dokumentation und dem Quelltext der Klasse zu entnehmen (siehe <A href="demos.html" target="_self">Download</A>-Bereich). 
+</P><P class="text">
+Die auf der vorherigen Seite angesprochene Drei-Schichten-Architektur setzt sich in diesem Fall zusammen aus <B>Java Server Pages</B> und Java Enterprise Beans. Allerdings greifen die JSP-Seiten nicht dirket auf die Beans zu, sondern sie verwenden Tags, die einer ebenfalls zu diesem Projekt geh&ouml;renden <B>Tag Library</B> entstammen.
+</P><P class="text">
+Es werden zwei verschiedene Arten von EJBs verwendet. F&uuml;r jeden Datensatz jeweils eine Entity Bean und eine Session Bean. Die <B>Entity Bean</B> names <B class="code">Data</B> repr&auml;sentiert jeweils einen Datensatz. Die Container Managed Persistence des JBoss sorgt f&uuml;r das Laden und Speichern dieser Daten. Der zweite Bean-Typ namens <B class="code">DataBase</B> fasst die Daten nur f&uuml;r eine <B>Session</B> als Datenbank zusammen, um auf ihr Operationen wie Suchen, Einf&uuml;gen und L&ouml;schen auszuf&uuml;hren.
+
+Das folgende UML-Diagramm zeigt die erforderliche Triade f&uuml;r beide Beans, d.h. das Home-, Remote-Interface und die Bean-Implementation.
+<P class="text">
+<A href="images/UML.jpg" class="hide2" target="_bild"><IMG src="images/TN_UML.jpg" width="300" height="225" border="0" alt="UML-Diagramm der Beans vergr&ouml;&szlig;ern"></A><IMG src="images/Lupe.gif" hspace="20" width="46" height="42" border="0" alt="zum Vergr&ouml;&szlig;ern bitte auf das Bild clicken">
+<BR><BR>
+UML-<A href="images/UML.jpg" target="_bild">Diagramm</A> der Beans
+<BR><BR><BR>
+</P>
+
+<H4>&Uuml;bersetzen, Packen und Deployen</H4>
+
+<P class="text">
+F&uuml;r das &Uuml;bersetzen der Quellen und Erzeugen des Archivs sollte <I>Ant</I> installiert sein. Dieses auf Java und XML basierende Build-Tool ist unter <A href="http://ant.apache.org" target="_apache">http://ant.apache.org</A> erh&auml;ltlich.
+</P><P class="text">Bei Aufruf von <B class="code">ant</B> ohne weitere Argumente wird die beiliegende XML-Datei <B class="code">build.xml</B> verwendet, um das vom JBoss ben&ouml;tigte <B>Enterprise Application Archive</B> <B class="code">database.ear
+</B> zu erzeugen und in das Deploy-Verzeichnis des Servers zu kopieren. Gegebenenfalls muss in der Datei <B class="code">build.xml</B> das lokale Verzeichnis der JBoss-Installation angepasst werden.
+</P>
+      
+    </TD>
+  </TR>
+</TABLE>
+
+<BR><HR size="1">
+<P>database .&nbsp;&nbsp;<A HREF="toc.html">Inhalt</A>&nbsp;&nbsp;<A HREF="subject.html">zur&uuml;ck</A>&nbsp;&nbsp;<A HREF="interface.html">weiter</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<A HREF="../../index.html" class="light">&nbsp;apage4u&nbsp;</A>home ]</P>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-11922467-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</BODY>
+</HTML>

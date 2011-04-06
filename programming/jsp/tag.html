@@ -1,0 +1,108 @@
+<HTML>
+<HEAD>
+<TITLE>tag library - Die tag Klasse</TITLE>
+<META NAME="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="Layout.css">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+<P>jsp &amp; tag library.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="definition.html">prev</A>&nbsp;&nbsp;<A HREF="pageContext.html">next</A></P>
+<HR SIZE="1">
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100% HEIGHT=70%>
+  <TR> 
+    <TD VALIGN=CENTER><!-- Begin text --> <!-- Begin head --> 
+      <TABLE WIDTH="92%" BORDER="0" CELLSPACING="0" CELLPADDING="0">
+        <TR> 
+          <TD WIDTH="6%" HEIGHT="10" BGCOLOR="#B2C9D8" VALIGN=BOTTOM ALIGN=CENTER> 
+            <H1><FONT SIZE="7" COLOR=WHITE>5</FONT></H1>
+          </TD>
+          <TD WIDTH="94%" VALIGN=BOTTOM BGCOLOR="#F8FAFC"> 
+            <H1>&nbsp;die tag Klasse</H1>
+          </TD>
+        </TR>
+      </TABLE>
+      <!-- End head --> 
+      <H2>5.1 Einfache tag handler Klasse</H2>
+      <PRE>package mttags;
+
+
+import javax.servlet.jsp.*;
+import javax.servlet.jsp.tagext.*;
+
+
+/**
+ * A simple Tag that displays a message.
+ */
+public class LookUpTag extends TagSupport {
+
+  // <FONT COLOR="#990000">Constructor
+</FONT>  public LookUpTag()
+  {
+    super();
+  }
+
+  // <FONT COLOR="#990000">Attribute
+</FONT>  private String jndiName=&quot;&quot;;
+
+  /**
+   * Method used by the JSP container to set the parameter Name.
+   */
+  public void <FONT COLOR="#990000">set</FONT>JndiName(String name)
+  {
+    this.jndiName=name;
+  }
+
+  /**
+   * Method Called at end of Tag
+   * @return either EVAL_PAGE or SKIP_PAGE
+   */
+  public int <FONT COLOR="#990000">doEndTag</FONT>() throws javax.servlet.jsp.JspTagException
+  {
+    try
+    {
+      pageContext.getOut().write(&quot;LookUp for&quot;+jndiName);
+    }
+    catch(java.io.IOException e)
+    {
+      throw new JspTagException(&quot;IO Error: &quot; + e.getMessage());
+    }
+    return <FONT COLOR="#990000">EVAL_PAGE</FONT>;
+  }
+}</PRE>
+      <P>Es muss ein Konstruktor und f&uuml;r das Attribut ein Feld und entsprechende 
+        set-Methode existieren.<BR>
+        Der Aufruf in der jsp-Seite lautet </P>
+      <PRE CLASS=HL>&lt;mt:LookUp jndiName=&quot;Bach&quot;/&gt;</PRE>
+      <P>und die Ausgabe</P>
+      <PRE CLASS=HL>LookUp for Bach</PRE>
+      <P>Neben <FONT FACE="Courier New, Courier, mono">doEndTag</FONT> gibt zahlreiche 
+        andere Methoden, die zu unterschiedlichen Zeitpunkten vom <I>JSP container</I> 
+        ausgef&uuml;hrt werden.<BR>
+      </P>
+      <H2>5.2 do-Methoden</H2>
+      <P>Wann werden die do-Methoden aufgerufen und welchen Einflu&szlig; haben 
+        ihre R&uuml;ckgabewerte.</P>
+      <P><IMG SRC="Images/ZeitlicherVerlauf.jpg" WIDTH="511" HEIGHT="597"> </P>
+      <P>&nbsp;</P>
+      </TD>
+  </TR>
+</TABLE>
+<HR SIZE="1">
+<P>jsp &amp; tag library.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="definition.html">prev</A>&nbsp;&nbsp;<A HREF="pageContext.html">next</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ 
+  back to&nbsp;<A HREF="../../index.html"> a P a g e </A>]</P>
+  
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-11922467-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>  
+  
+</BODY>
+</HTML>

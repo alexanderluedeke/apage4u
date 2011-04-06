@@ -1,0 +1,108 @@
+package Vortrag;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.servlet.jsp.*;
+import javax.servlet.jsp.tagext.*;
+import java.io.PrintWriter;
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.util.Vector;
+import org.apache.jasper.runtime.*;
+import java.beans.*;
+import org.apache.jasper.JasperException;
+
+
+public class _0002fVortrag_0002fFacultaet_0002ejspFacultaet_jsp_0 extends HttpJspBase {
+
+    // begin [file="D:\\TC\\webapps\\alex1\\Vortrag\\Facultaet.jsp";from=(2,3);to=(9,0)]
+        
+        	public long fact(long x) {
+        		if (x==0)
+        			return 1;
+        		else
+        			return x * fact(x-1);
+        	}
+    // end
+
+    static {
+    }
+    public _0002fVortrag_0002fFacultaet_0002ejspFacultaet_jsp_0( ) {
+    }
+
+    private static boolean _jspx_inited = false;
+
+    public final void _jspx_init() throws JasperException {
+    }
+
+    public void _jspService(HttpServletRequest request, HttpServletResponse  response)
+        throws IOException, ServletException {
+
+        JspFactory _jspxFactory = null;
+        PageContext pageContext = null;
+        HttpSession session = null;
+        ServletContext application = null;
+        ServletConfig config = null;
+        JspWriter out = null;
+        Object page = this;
+        String  _value = null;
+        try {
+
+            if (_jspx_inited == false) {
+                _jspx_init();
+                _jspx_inited = true;
+            }
+            _jspxFactory = JspFactory.getDefaultFactory();
+            response.setContentType("text/html;charset=ISO-8859-1");
+            pageContext = _jspxFactory.getPageContext(this, request, response,
+			"", true, 8192, true);
+
+            application = pageContext.getServletContext();
+            config = pageContext.getServletConfig();
+            session = pageContext.getSession();
+            out = pageContext.getOut();
+
+            // HTML // begin [file="D:\\TC\\webapps\\alex1\\Vortrag\\Facultaet.jsp";from=(0,0);to=(2,0)]
+                out.write("<HTML>\r\n<HEAD>\r\n");
+            // end
+            // HTML // begin [file="D:\\TC\\webapps\\alex1\\Vortrag\\Facultaet.jsp";from=(9,2);to=(17,0)]
+                out.write("\r\n</HEAD>\r\n\r\n<BODY>\r\n\r\n<TABLE>\r\n<TR><TH width=\"50\" align=left> x </TH><TH width=\"50\" align=left> x! </TH></TR>\r\n<BR>\r\n");
+            // end
+            // begin [file="D:\\TC\\webapps\\alex1\\Vortrag\\Facultaet.jsp";from=(17,2);to=(19,0)]
+                
+                	for (int x=1; x < 10; x++) {
+            // end
+            // HTML // begin [file="D:\\TC\\webapps\\alex1\\Vortrag\\Facultaet.jsp";from=(19,2);to=(20,21)]
+                out.write("\r\n\t\t<TR><TD width=\"50\">");
+            // end
+            // begin [file="D:\\TC\\webapps\\alex1\\Vortrag\\Facultaet.jsp";from=(20,24);to=(20,27)]
+                out.print( x );
+            // end
+            // HTML // begin [file="D:\\TC\\webapps\\alex1\\Vortrag\\Facultaet.jsp";from=(20,29);to=(20,49)]
+                out.write("</TD><TD width=\"50\">");
+            // end
+            // begin [file="D:\\TC\\webapps\\alex1\\Vortrag\\Facultaet.jsp";from=(20,52);to=(20,61)]
+                out.print( fact(x) );
+            // end
+            // HTML // begin [file="D:\\TC\\webapps\\alex1\\Vortrag\\Facultaet.jsp";from=(20,63);to=(21,0)]
+                out.write("</TD></TR>\r\n");
+            // end
+            // begin [file="D:\\TC\\webapps\\alex1\\Vortrag\\Facultaet.jsp";from=(21,2);to=(23,0)]
+                
+                	}
+            // end
+            // HTML // begin [file="D:\\TC\\webapps\\alex1\\Vortrag\\Facultaet.jsp";from=(23,2);to=(27,7)]
+                out.write("\r\n</TABLE>\r\n\r\n</BODY>\r\n</HTML>");
+            // end
+
+        } catch (Exception ex) {
+            if (out != null && out.getBufferSize() != 0)
+                out.clearBuffer();
+            if (pageContext != null) pageContext.handlePageException(ex);
+        } finally {
+            if (out != null) out.flush();
+            if (_jspxFactory != null) _jspxFactory.releasePageContext(pageContext);
+        }
+    }
+}

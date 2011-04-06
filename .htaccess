@@ -1,0 +1,14 @@
+
+
+# custom 404 page
+ErrorDocument 404 /404.html
+
+
+# We don't need to tell everyone we're apache.
+ServerSignature Off
+   
+#<IfModule php5_module>
+#	AddType application/x-httpd-php .php
+#	AddType application/x-httpd-php .html
+#</IfModule>
+#AddHandler application/x-httpd-php .php .html

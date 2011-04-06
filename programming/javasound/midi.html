@@ -1,0 +1,324 @@
+<HTML>
+<HEAD>
+<TITLE>apage4u java sound - MIDI</TITLE>
+<META name="Content-Type" content="text/html; charset=iso-8859-1">
+<LINK REL="STYLESHEET" type="text/css" href="Layout.css">
+</HEAD>
+<BODY bgcolor="#FFFFFF">
+
+<P><I><A href="javaSoundClasses.html">Java Sound</A></I>.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="Bsp2_AdvancedExamples.html">prev</A>&nbsp;&nbsp;<A HREF="spi.html">next</A></P>
+<HR size="1">
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=101% HEIGHT=70%>
+  <TR> 
+    <TD VALIGN=CENTER><!-- Begin text --> 
+      <H2>2.1 Das Midi Package </H2>
+      <P>Erinnern wir uns nochmals an das Ger&auml;tekonzept:</P>
+      <P><IMG src="Images/Ger%E4te_2.gif" width="550" height="241"></P>
+      <P><IMG src="Images/Ger%E4te_2a.gif" width="191" height="146"> Wie die Legende 
+        links schon zeigt, mu&szlig; unterschieden werden zwischen:</P>
+      <UL>
+        <LI><I>MIDI wire protocol</I>, das urspr&uuml;ngliche MIDI protocol, dient 
+          nur der &Uuml;bertragung von &quot;Steuerbefehlen&quot;, den <B>MIDI 
+          message</B>, zwischen MIDI<B> </B>devices (raw MIDI).</LI>
+        <LI>Ein <I>standard <A href="midifile.html">MIDI file</A></I> enth&auml;lt <B>MIDI events</B>. Bestehend 
+          aus einer MIDI message, wie im MIDI wire protocol, aber mit zus&auml;tzlichen 
+          Informationen &uuml;ber das timing (time stampe in <A href="#ticks">ticks</A>).</LI>
+      </UL>
+      <H4>MIDI Event</H4>
+      <P><IMG src="Images/MidiEvent.gif" width="500" height="223"><BR>
+      </P>
+      <P>Die <B>TimeStamp</B> eines MidiEvents ist der theoretischer Abspielzeitpunkt 
+        in <A href="#ticks">ticks</A> (wobei der Song mit 0 beginnt).</P>
+      <P>Ein <FONT face="Courier New, Courier, mono"><B>MidiEvent</B></FONT> kappselt 
+        eine MidiMessage, wie der Konstruktor zeigt</P>
+      <PRE>MidiEvent(MidiMessage message, long tick) </PRE>
+      <P></P>
+      <H4>MIDI Message</H4>
+      <P><FONT face="Courier New, Courier, mono"><B>MidiMessage</B></FONT> ist 
+        eine abstrakte Klasse die Ereignisse wie im MIDI wire protocol repr&auml;sentiert. 
+        Sie besitzen also keine timing-Informationen.</P>
+      <P> Drei MidiMessage subclasses:</P>
+      <UL>
+        <LI><FONT face="Courier New, Courier, mono">ShortMessages </FONT><FONT size="-1">(Noten)</FONT></LI>
+        <LI><FONT face="Courier New, Courier, mono">SysexMessages<B> </B></FONT><FONT size="-1">(Hersteller 
+          spezifische Informationen)</FONT></LI>
+        <LI><FONT face="Courier New, Courier, mono">MetaMessages<B> </B></FONT><FONT size="-1">(z.B. 
+          Texte)</FONT></LI>
+      </UL>
+      <P><FONT size="-2">Weitere Informationen &uuml;ber den MIDI-Standard: <A href="http://www.midi.org">MIDI 
+        Manufacturer's Association</A></FONT></P>
+      <H4>&nbsp;</H4>
+      <H4>MidiDevice</H4>
+      <P>Neben der SoundCard und externen Midi-Instrumenten ist jede Software, 
+        die das <FONT face="Courier New, Courier, mono"><B>MidiDevice interface</B></FONT> 
+        implementiert eine <FONT face="Courier New, Courier, mono">MidiDevice</FONT>. 
+        Sie besitzt mindestens</P>
+      <UL>
+        <LI><FONT size="-1">Midi input und output <FONT face="Courier New, Courier, mono">port</FONT></FONT></LI>
+        <LI><FONT size="-1">eine innnere Klasse <B><FONT face="Courier New, Courier, mono">MidiDevice.Info</FONT></B></FONT></LI>
+        <LI><FONT size="-1">kann MidiMessages senden und empfangen</FONT></LI>
+      </UL>
+      <P>Die <FONT face="Courier New, Courier, mono">MidiDevice interface</FONT> 
+        Hierachie:</P>
+      <P><IMG src="Images/DeviceHierachie_350.gif" width="347" height="199"></P>
+      <H4>Sequencer</H4>
+      <P>Ein <FONT face="Courier New, Courier, mono">sequencer</FONT> kann <FONT face="Courier New, Courier, mono">sequences</FONT> 
+        aufnehmen und wiedergeben. Daf&uuml;r besitzt er:</P>
+      <P><IMG src="Images/Sequencer.gif" width="349" height="277"></P>
+      <UL>
+        <LI><FONT face="Courier New, Courier, mono">transmitter</FONT> zum Senden 
+          von raw-Midi events (MIDI Messages)</LI>
+        <LI><FONT face="Courier New, Courier, mono">receiver</FONT> zum Empfangen 
+          von raw-Midi events (MIDI Messages)</LI>
+        <LI><FONT face="Courier New, Courier, mono">load</FONT> Methode zum Laden 
+          von <A href="midifile.html">MIDI files</A> (MIDI Events)</LI>
+      </UL>
+      <P>Wenn er aufnimmt, f&uuml;gt er den &quot;nackten&quot; Midi messages 
+        timing Informationen hinzu.<BR>
+        Bei der Wiedergabe durch z.B. einen Synthesizers entfernt er diese Informationen. 
+        Somit leistet er den &Uuml;bergang vom <B>MIDI wire protocol</B> zu <B>standard 
+        MIDI</B>.</P>
+      <H4>Synthesizers</H4>
+      <P>Ein <FONT face="Courier New, Courier, mono">Synthesizer</FONT> ist einzige 
+        device in diesem package, die Sound selbst erzeugt.</P>
+      <UL>
+        <LI><FONT size="-1">Wavetable synthesis: Sample einer SoundBank werden 
+          abgespielt. Die gegew&uuml;nsche H&ouml;he wird durch pitching und die 
+          L&auml;nge looping realisiert.</FONT></LI>
+        <LI><FONT size="-1">Frequency modulation (FM), additive synthesis, or 
+          physical modeling berechnen den Klang nach unterschiedlichen Algorithmen.</FONT></LI>
+      </UL>
+      <P><IMG src="Images/Synthesizer.gif" width="547" height="371"></P>
+      <UL>
+        <LI>Empf&auml;ngt &uuml;ber einen <B><FONT face="Courier New, Courier, mono">receiver</FONT></B>.</LI>
+        <LI>Kontrolliert MIDI channel objects, meistens 16.</LI>
+        <LI>Durch bank- und program-number (in einem <FONT face="Courier New, Courier, mono">Patch</FONT>-Objekt 
+          gekapselt) wird jedem Midi channel ein <B><FONT face="Courier New, Courier, mono">Instrument</FONT></B> 
+          zugeordnet (preset der Soundcard oder soundbank Datei)</LI>
+      </UL>
+      <P>Z.B. rendert der <I>Java Sound Synthesizer</I> die ShortMessages auf 
+        der audio device der SoundCard. Will man den entstanden audio stream z.B 
+        in eine Datei lenken, so sucht man vergebens nach einer DataLine.</P>
+      <P>&nbsp;</P>
+      <P>&nbsp;</P>
+      <H3>2.2 Zugriff auf die Midi System Resourcen</H3>
+      <H4>MidiSystem</H4>
+      <P>Eine Application kann von <FONT face="Courier New, Courier, mono"><B>MidiSystem</B></FONT> 
+        (mu&szlig; nicht mit new erzeugt werden) folgende Devices erhalten:</P>
+      <UL>
+        <LI>Sequencers</LI>
+        <LI>Synthesizers</LI>
+        <LI>Transmitters (Midi input ports)</LI>
+        <LI>Receivers (Midi output ports)</LI>
+        <LI>Daten aus standard <A href="midifile.html">MIDI files</A></LI>
+        <LI>Daten aus soundbank files </LI>
+      </UL>
+      <P>Diese get-Methoden liefern die jeweilige <B>default</B> device (angewendet 
+        auf MidiSystem):</P>
+      <PRE>static Sequencer <B>get</B>Sequencer()
+static Synthesizer getSynthesizer()
+static Receiver getReceiver()
+static Transmitter getTransmitter()</PRE>
+      <P>Die beiden letzten Methoden liefern externen Midi output bzw. input port. 
+        (Fehler)</P>
+      <P>&nbsp;</P>
+      <P>Eine komplette &Uuml;bersicht aller installierten devices gibt die Methode 
+      </P>
+      <PRE>static MidiDevice.Info[] <B>get</B>MidiDevice<B>Info</B>()
+</PRE>
+      <P>als array von <FONT face="Courier New, Courier, mono"><B>MidiDevice.Info</B></FONT> 
+        Objekten:</P>
+      <P>Jedes <FONT face="Courier New, Courier, mono">MidiDevice.Info</FONT> 
+        Objekten enth&auml;lt</P>
+      <UL>
+        <LI><FONT size="-1">Name</FONT></LI>
+        <LI><FONT size="-1">Version number</FONT></LI>
+        <LI><FONT size="-1">Vendor (Firmenname)</FONT></LI>
+        <LI><FONT size="-1">A description of the device</FONT><BR>
+        </LI>
+      </UL>
+      <P>Z.B. sind auf meinem System folgende Midi devices installiert:</P>
+      <PRE>
+&gt;&gt;&gt;java MidiPlayer -l
+
+Java Sound Synthesizer
+Java Sound Sequencer
+MIDI Mapper
+SB AWE32 MIDI Synth [620]
+SB16 MIDI-Out [330]
+Creative Music Synth [220]
+Wire: SB16 MIDI-In [330]
+Wire: Generator internal Midiport
+Wire: SB AWE32 MIDI Synth [620]
+Wire: SB16 MIDI-Out [330]
+Wire: Creative Music Synth [220]
+Tritonus MidiShare sequencer
+MidiShare MIDI client
+Tritonus Java sequencer </PRE>
+      <P>Jetzt kann ich gezielt jede device erzeugen, z.B. &quot;Java Sound Sequencer&quot; 
+      </P>
+      <PRE>MidiDevice.Info seqInfo = getMidiDeviceInfo(&quot;Java Sound Sequencer&quot;);
+Sequencer sm_sequencer = (Sequencer) MidiSystem.getMidiDevice(seqInfo);</PRE>
+      <P>Jede Midi device mu&szlig; ge&ouml;ffnet werden:</P>
+      <PRE>if (!(device.isOpen())) {
+    try { 
+        device.<B>open</B>();
+    } catch (MidiUnavailableException e) {
+        // Handle or throw exception...
+    }
+}</PRE>
+      <H4>&nbsp;</H4>
+      <H4>Senden einer Message an einen Receiver</H4>
+      <P>Senden einer Note an z.B. das Midi-Out der SoundCard.</P>
+      <PRE>
+ShortMessage myMsg = <B>new ShortMessage</B>();
+// Start playing the note Middle C (60),
+// moderately loud (velocity = 93).
+myMsg.<B>setMessage</B>(ShortMessage.NOTE_ON, 0, 60, 93);
+long timeStamp = -1;
+// Get default Receiver.
+Receiver rcvr = MidiSystem.getReceiver();
+rcvr.<B>send</B>(myMsg, timeStamp);</PRE>
+      <P><FONT size="-1">Nachdem mit <FONT face="Courier New, Courier, mono">new</FONT> 
+        eine neue <FONT face="Courier New, Courier, mono">ShortMessage</FONT> 
+        erzeugt wurde, er h&auml;lt sie einen Inhalt mit</FONT></P>
+      <PRE><FONT size="-1">void setMessage(int command, int channel, int data1, int data2)</FONT></PRE>
+      <P><FONT size="-1"> Ein command k&ouml;nnte z.B. die Konstante <FONT face="Courier New, Courier, mono">ShortMessage.NOTE_ON</FONT> 
+        sein. </FONT></P>
+      <PRE><FONT size="-1">void send(MidiMessage message, long timeStamp)</FONT></PRE>
+      <P><FONT size="-1">Die timeStamp -1 meint: Die Message soll so schnell wie 
+        m&ouml;glich gesendet werden.</FONT></P>
+      <H4>&nbsp;</H4>
+      <H4>Verbinden von Transmitter und Receiver</H4>
+      Verbinden eines Sequencers mit einem Synthesizer. 
+      <P><IMG src="Images/TransmitterReceiver_500.gif" width="495" height="141"></P>
+      <PRE>Sequencer seq;
+Transmitter seqTrans;
+Synthesizer synth;
+Receiver synthRcvr;
+try {
+    seq = MidiSystem.getSequencer();
+    seqTrans = seq.<B>getTransmitter</B>();
+    synth = MidiSystem.getSynthesizer();
+    synthRcvr = synth.<B>getReceiver</B>();
+    seqTrans.<B>setReceiver</B>(synthRcvr);
+} catch (MidiUnavailableException e) {
+    // handle or throw exception
+}</PRE>
+      <P>&nbsp;</P>
+      <P>&Uuml;brigens m&uuml;ssen bei Programmende so die <FONT face="Courier New, Courier, mono">decive</FONT> 
+        und alle dazugeh&ouml;rigen <FONT face="Courier New, Courier, mono">transmitters</FONT> 
+        und <FONT face="Courier New, Courier, mono">receivers</FONT> geschlossen 
+        werden:</P>
+      <PRE>MidiDevice.<B>close</B>()</PRE>
+      <H3>&nbsp;</H3>
+      <H3>&nbsp;</H3>
+      <H3>2.3 Abspielen, Aufzeichnen von <A href="midifile.html">MIDI files</A></H3>
+      <H4>Sequence</H4>
+      <P>Die Sequence dient der Repr&auml;sentation des Songs einschliesslich 
+        seiner Instrumente.</P>
+      <P><IMG src="Images/Sequence.gif" width="548" height="158"></P>
+      <UL>
+        <LI><FONT face="Courier New, Courier, mono">Sequence</FONT> (enth&auml;lt 
+          als Vektor Tracks)</LI>
+        <LI><FONT face="Courier New, Courier, mono">Track</FONT> (enth&auml;lt 
+          als Vektor MidiEvents)</LI>
+        <LI><FONT face="Courier New, Courier, mono">MidiEvent</FONT></LI>
+      </UL>
+      <P><A name="ticks"></A>Der <B>DivisionType</B> gibt an, wie die <I>ticks</I> zu interpretieren sind</P>
+      <UL>
+        <LI>Pulses per quarter note (PPQ) oder</LI>
+        <LI>ticks per frame (SMPTE time code)</LI>
+      </UL>
+      <P>mit <FONT face="Courier New, Courier, mono">Sequence.getDivisionType() 
+        </FONT>erf&auml;hrt man, welcher Type f&uuml;r die Sequence gilt. <BR>
+        <B>Resolution</B> beschreibt Anzahl der ticks pro </P>
+      <UL>
+        <LI>beat (f&uuml;r PPQ) bzw.</LI>
+        <LI>frame (SMPTE) <BR>
+        </LI>
+      </UL>
+      <P>Die <B>Patch</B>-Objekte beschreiben die Instrumente.</P>
+      <H4>&nbsp;</H4>
+      <H4>Sequencer</H4>
+      <P>Er dient dem Abspielen oder Aufnehmen einer Sequence. Er ist w&auml;hrend 
+        der Wiedergabe f&uuml;r die &quot;<B>Auslieferung</B>&quot; der Midi <B>Messages</B> 
+        &uuml;ber seinen Transmitter verantwortlich:</P>
+      <P><IMG src="Images/Sequence2.gif" width="548" height="139"></P>
+      <P>Es liegt somit in der Natur das Sache, dass Messages mit gleicher TimeStamp 
+        nicht gleichzeitig gesendet werden k&ouml;nnen. Der Sequencer ist wesentlich 
+        f&uuml;r unangenehme timing Schwankungen verantwortlich. Abweichungen 
+        unter 5 Millisekunden werden in der Regel nicht bemerkt.</P>
+      <P>&nbsp;</P>
+      <P>Ein <A href="midifile.html">MIDI file</A> z.B. kann nur als <FONT face="Courier New, Courier, mono">Sequence</FONT> 
+        in einen <FONT face="Courier New, Courier, mono">Sequencer</FONT> geladen 
+        werden (Beispiel):</P>
+      <PRE>try {
+    File myMidiFile = new <B>File</B>("seq1.mid");
+    // Construct a Sequence object, and
+    // load it into my sequencer.
+    Sequence mySeq = MidiSystem.getSequence(myMidiFile);
+    sequencer.<B>setSequence</B>(mySeq);
+} catch (Exception e) {
+    // Handle error
+}
+</PRE>
+      <H4>Abspielen eines <A href="midifile.html">MIDI files</A></H4>
+      <P>geschieht dann durch</P>
+      <PRE>void start()
+void stop()</PRE>
+      <P>des Sequencers.</P>
+      <H4>&nbsp;</H4>
+      <H4>Recording und Saving einer Sequence</H4>
+      <OL>
+        <LI>Mit <FONT face="Courier New, Courier, mono">MidiSystem.getSequencer</FONT> 
+          einen neuen <FONT face="Courier New, Courier, mono">Sequencer</FONT> 
+          anlegen.</LI>
+        <LI>“Wiring” der Midi connections:<BR>
+          <BR>
+          <IMG src="Images/Recording_500.gif" width="499" height="89" vspace="10"><BR>
+          <BR>
+        </LI>
+        <LI>Neue Sequence erzeugen mit<BR>
+          <BR>
+          <FONT face="Courier New, Courier, mono">mySeq = new Sequence(Sequence.PPQ, 
+          10);</FONT><BR>
+          <BR>
+          Argumente sind divisionType and a timing resolution.</LI>
+        <LI><FONT face="Courier New, Courier, mono">Sequencer.setSequence</FONT> 
+        </LI>
+        <LI><FONT face="Courier New, Courier, mono">Sequencer.<B>recordEnable</B></FONT></LI>
+        <LI><FONT face="Courier New, Courier, mono">Sequencer.<B>startRecording</B></FONT></LI>
+        <LI><FONT face="Courier New, Courier, mono">Sequencer.stopRecording</FONT></LI>
+        <LI>Midi Datei speichern mit <FONT face="Courier New, Courier, mono">MidiSystem.write</FONT> 
+        </LI>
+      </OL>
+      <H3>&nbsp;</H3>
+      <H3>&nbsp;</H3>
+      <H3>2.4 Fehler in Java Sound</H3>
+      <UL>
+        <LI>Zugriff auf die externen Midi Ports und den Synthesizer der SoundCard 
+          funktionierte bisher nicht. L&ouml;sung: <B><A href="spi.html">WireProvider</A></B>.</LI>
+      </UL>
+      </TD>
+  </TR>
+</TABLE>
+<HR size="1">
+<P><I><A href="javaSoundClasses.html">Java Sound</A></I>.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="Bsp2_AdvancedExamples.html">prev</A>&nbsp;&nbsp;<A HREF="spi.html">next</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ 
+  back to&nbsp;<A HREF="../../index.html"> a p a g e 4 u </A>]</P>
+  
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-11922467-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  
+</BODY></HTML>

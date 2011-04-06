@@ -1,0 +1,224 @@
+<HTML>
+<HEAD>
+<TITLE>apage4u java sound - Sampled Audio</TITLE>
+<META name="Content-Type" content="text/html; charset=iso-8859-1">
+<LINK REL="STYLESHEET" type="text/css" href="Layout.css">
+</HEAD>
+<BODY bgcolor="#FFFFFF">
+
+<P><I><A href="javaSoundClasses.html">Java Sound</A></I>.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="grundlagen.html">prev</A>&nbsp;&nbsp;<A HREF="Bsp1_BasicExamples.html">next</A></P>
+<HR size="1">
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100% HEIGHT=70%>
+  <TR> 
+    <TD VALIGN=CENTER><!-- Begin text --> 
+      <H2>1.1 Das Sampled Package</H2>
+      <H3>1.1.1 Sampled audio</H3>
+      <H2><IMG src="Images/SampledAudio.gif" width="550" height="216"></H2>
+      <P>Audio Daten (sampled audio) k&ouml;nnen im Rechner nur gen&auml;hert, 
+        d.h. als Diskretisierung eines kontinuierlichen Signals, dargestellt werden. 
+        F&uuml;r diesen Zweck haben sich unterschiedliche Standards (Datenformate) 
+        entwickelt.</P>
+      <H4>Datenformate</H4>
+      <P>Das Datenformat wird repr&auml;sentiert als <FONT face="Courier New, Courier, mono"><B>AudioFormat</B></FONT> 
+        object, mit folgenden Eigenschaften</P>
+      <UL>
+        <LI><FONT size="-1">Encoding technique, pulse oder modulation (PCM)</FONT></LI>
+        <LI><FONT size="-1"> Number of channels (1 f&uuml;r mono, 2 f&uuml;r stereo) 
+          </FONT></LI>
+        <LI><FONT size="-1"> Sample rate (number of samples per second, per channel) 
+          </FONT></LI>
+        <LI><FONT size="-1"> Number of bits per sample</FONT></LI>
+        <LI><FONT size="-1"> Frame rate</FONT></LI>
+        <LI><FONT size="-1">Frame size in bytes (Summe der Gr&ouml;&szlig;en aller 
+          Samples (f&uuml;r jeden Channel eins) zu einem Zeitpunkt)</FONT></LI>
+        <LI><FONT size="-1">Byte order (big-endian or little-endian)</FONT></LI>
+      </UL>
+      <H4> Dateiformate</H4>
+      <P>Aus den Datenformaten leiten sich zum Speichern entsprechende Datenformate 
+        ab. Das Dateiformat wird repr&auml;sentiert als <FONT face="Courier New, Courier, mono"><B></B></FONT><FONT face="Courier New, Courier, mono"><B>AudioFileFormat</B></FONT> 
+        object, mit den Eigenschaften:</P>
+      <UL>
+        <LI><FONT size="-1">file type (WAVE, AIFF, etc.)</FONT></LI>
+        <LI><FONT size="-1">file's length in bytes</FONT></LI>
+        <LI><FONT size="-1">length, in frames, der audio daten</FONT></LI>
+        <LI><FONT size="-1"><FONT face="Courier New, Courier, mono">AudioFormat</FONT></FONT></LI>
+      </UL>
+      <H3>&nbsp;</H3>
+      <H3>1.1.2 Zugriff auf System Resourcen<A name="info"></A></H3>
+      <H4><FONT face="Courier New, Courier, mono">AudioSystem</FONT></H4>
+      <P>Durch die Klasse <B><FONT face="Courier New, Courier, mono"><A href="info.html">AudioSystem</A></FONT></B> 
+        (sie mu&szlig; nicht erzeugt werden) k&ouml;nnen alle installierten Resourcen 
+        erfragt und angesprochen werden durch <A href="info.html">info</A> Objekte.</P>
+      <H3>&nbsp;</H3>
+      <H3>1.1.3 Die Ger&auml;te - Mixer</H3>
+      <UL>
+        <LI> Eine <B>Device</B> (Ger&auml;t) wird als <B><FONT face="Courier New, Courier, mono"><A href="line.html">mixer</A></FONT></B> 
+          object dargestellt. </LI>
+        <LI>Repr&auml;sentiert sowohl hardware (Soundcard) als auch software devices 
+          (Effect plugin).<IMG src="Images/Ger%E4te_3.gif" width="550" height="306"></LI>
+        <LI>audio-input mixer: empf&auml;ngt &uuml;ber <FONT face="Courier New, Courier, mono"><B>input 
+          ports</B></FONT> (microphone input) und sendet durch <FONT face="Courier New, Courier, mono"><B>TargetDataLines</B></FONT><BR>
+          <BR>
+          <IMG src="Images/AudioInput_500.gif" width="497" height="120" alt="audio input"><BR>
+          <BR>
+        </LI>
+        <LI>audio-output mixer: empf&auml;ngt &uuml;ber <FONT face="Courier New, Courier, mono"><B>Clips</B></FONT> 
+          oder <FONT face="Courier New, Courier, mono"><B>SourceDataLines</B></FONT> 
+          und sendet durch <B><FONT face="Courier New, Courier, mono">output</FONT></B> 
+          <B><FONT face="Courier New, Courier, mono">ports</FONT></B> (speaker).<BR>
+          <BR>
+          <IMG src="Images/AudioOutput_500.gif" width="496" height="142" alt="audio output"><BR>
+          <BR>
+        </LI>
+        <LI>Verwaltet sogar mehrere audio input und output streams.</LI>
+        <LI>Das <FONT face="Courier New, Courier, mono">Mixer</FONT> <FONT face="Courier New, Courier, mono">interface</FONT> 
+          unterst&uuml;tzt Synchronisation.</LI>
+      </UL>
+      <H3>&nbsp;</H3>
+      <H3>1.1.4 Abspielen von Audio (playing back / rendering)</H3>
+      <P>Es gibt zwei Arten Audio Daten abzuspielen:</P>
+      <UL>
+        <LI> <FONT face="Courier New, Courier, mono">SourceDataLine</FONT>: <B>streaming</B> 
+          (real-time Daten bzw. zu viele Daten f&uuml;r den Speicher)</LI>
+        <LI><FONT face="Courier New, Courier, mono">Clip</FONT>: <B>non-real-time</B> 
+          (Audio Daten befinden sich preloaded im Speicher)</LI>
+      </UL>
+      <H4>Schreiben in eine SourceDataLine</H4>
+      <PRE>void <B>open</B>();
+void open(AudioFormat format);
+void open(AudioFormat format, int bufferSize);
+</PRE>
+      <P>Mit den Methoden <FONT face="Courier New, Courier, mono"><B>start</B></FONT> 
+        und <B><FONT face="Courier New, Courier, mono">stop</FONT></B> wird das 
+        Abspielen begonnen bzw. beendet.<BR>
+      </P>
+      <PRE>//read chunks from a stream and write them to a source data line
+line.<B>start</B>();
+while (total < totalToRead && !stopped)}
+    numBytesRead = stream.<B>read</B>(myData, 0, numBytesToRead);
+    if (numBytesRead == -1) break;
+    total += numBytesRead;
+    line.<B>write</B>(myData, 0, numBytesRead); 
+}
+...
+//this is the final invocation of write
+line.drain();
+line.<B>stop</B>();
+line.<B>close</B>();
+line = null;</PRE>
+      <H4>Clip</H4>
+      <PRE>void open(AudioInputStream stream);
+void open(AudioFormat format, byte[] data, int offset, int bufferSize);</PRE>
+      <P>Eine Besonderheit von <FONT face="Courier New, Courier, mono">Clip</FONT> 
+        ist, das die audio Daten komplett geladen werden,so dass sie auch geloopt 
+        abgespielt werden k&ouml;nnen.</P>
+      <H4> Monitoring eines Line Status </H4>
+      <P>Mit folgender methode registriet man ein Objekt beim Line Objekt als 
+        Listener,</P>
+      <PRE>public void <B>add</B>Line<B>Listener</B>(LineListener listener);
+</PRE>
+      <P>so da&szlig; <FONT face="Courier New, Courier, mono">LineEvents</FONT> 
+        wie OPEN, CLOSE, START, and STOP empfangen werden k&ouml;nnen.</P>
+      <H3>&nbsp; </H3>
+      <H3>1.1.5 Aufnehmen von Audio (capturing / recording)</H3>
+      <H4><FONT face="Courier New, Courier, mono"><B>Lesen aus einer TargetDataLine</B></FONT></H4>
+      <UL>
+        <LI> <FONT face="Courier New, Courier, mono"><B>read</B></FONT> um Audio 
+          Daten vom Mixer zu erhalt.</LI>
+        <LI> <B><FONT face="Courier New, Courier, mono">available</FONT></B> methode 
+          zum Pr&uuml;fen, ob noch Daten im Puffer sind.<BR>
+        </LI>
+      </UL>
+      <PRE>TargetDataLine line;
+DataLine.Info info = <B>new</B> DataLine<B>.Info(TargetDataLine</B>.class,format);
+// format is an AudioFormat object
+// Obtain and open the line. 
+try { 
+    line = (TargetDataLine) AudioSystem.<B>getLine</B>(info);
+    line.<B>open</B>(format); 
+} catch (LineUnavailableException ex) {
+    // Handle the error ... 
+}
+</PRE>
+      <PRE>ByteArrayOutputStream out = <B>new ByteArrayOutputStream</B>();
+int numBytesRead;
+byte[] data = new byte[line.getBufferSize() / 5];
+// Begin audio capture.
+line.<B>start</B>();
+// Here, stopped is a global boolean set by another thread.
+while (!stopped) { 
+    // Read the next chunk of data from the TargetDataLine.
+    numBytesRead = line.<B>read</B>(data, 0, data.length);
+    // Save this chunk of data.
+    out.<B>write</B>(data, 0, numBytesRead);
+}
+</PRE>
+      <H3>&nbsp;</H3>
+      <H3>1.1.6 Processing Audio mit Controls</H3>
+      <UL>
+        <LI>Typische Controls sind <FONT face="Courier New, Courier, mono">gain</FONT>, 
+          <FONT face="Courier New, Courier, mono">pan</FONT>, and <FONT face="Courier New, Courier, mono">reverb</FONT></LI>
+        <LI>Sie werden durch <FONT face="Courier New, Courier, mono">getControl</FONT> 
+          und eine Konstante angesprochen:<BR>
+        </LI>
+      </UL>
+      <PRE>FloatControl volCtrl = 
+    (FloatControl) lineIn.<B>getControl</B>(FloatControl.Type.<B>VOLUME</B>);
+</PRE>
+      <H3>&nbsp;</H3>
+      <H3>1.1.7 Verwendung von Dateien</H3>
+      <H4>Aus einer Datei lesen:</H4>
+      <PRE>int totalFramesRead = 0;
+File fileIn = <B>new File</B>(somePathName);
+try {
+    AudioInputStream audioInputStream = 
+        AudioSystem.<B>getAudioInputStream</B>(<B>file</B>In);
+    int bytesPerFrame = audioInputStream.getFormat().getFrameSize();
+    // Set an arbitrary buffer size of 1024 frames.
+    int numBytes = 1024 * bytesPerFrame;
+    byte[] audioBytes = <B>new byte[</B>numBytes<B>]</B>;
+    try { 
+        int numBytesRead = 0;
+        int numFramesRead = 0;
+        // Try to read numBytes bytes from the file.
+        while ((numBytesRead = audioInputStream.<B>read</B>(audioBytes)) != -1) {
+            // Calculate the number of frames actually read.
+            numFramesRead = numBytesRead / bytesPerFrame;
+            totalFramesRead += numFramesRead;
+            // Here, do something useful with the audio data that's
+            // now in the audioBytes array... 
+        }
+    } catch (Exception ex) {
+        // Handle the error... (UnsupportedAudioFileException) 
+    }
+} catch (Exception e) {
+    // Handle the error...
+}</PRE>
+      <H4>In eine Datei schreiben:</H4>
+      <PRE>File fileOut = <B>new File</B>(someNewPathName);
+AudioFileFormat.Type fileType = fileFormat.getType();
+if (AudioSystem.isFileTypeSupported(fileType, audioInputStream)) { 
+    AudioSystem.<B>write</B>(<B>audioInputStream</B>, fileType, <B>fileOut</B>);
+}</PRE>
+      </TD>
+  </TR>
+</TABLE>
+<HR size="1">
+<P><I><A href="javaSoundClasses.html">Java Sound</A></I>.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="grundlagen.html">prev</A>&nbsp;&nbsp;<A HREF="Bsp1_BasicExamples.html">next</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ 
+  back to&nbsp;<A HREF="../../index.html"> a p a g e 4 u </A>]</P>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-11922467-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</BODY></HTML>

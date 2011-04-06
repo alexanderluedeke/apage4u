@@ -1,0 +1,93 @@
+<HTML>
+<HEAD>
+<TITLE>apage4u java sound - Sampled Audio</TITLE>
+<META name="Content-Type" content="text/html; charset=iso-8859-1">
+<LINK REL="STYLESHEET" type="text/css" href="Layout.css">
+</HEAD>
+<BODY bgcolor="#FFFFFF">
+
+<P><I><A href="javaSoundClasses.html">Java Sound</A></I>.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="sampled.html#info">prev</A>&nbsp;&nbsp;<A HREF="midi.html">next</A></P>
+<HR size="1">
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100% HEIGHT=70%>
+  <TR> 
+    <TD VALIGN=CENTER><!-- Begin text -->
+      <H2>1.3.1 Info - Zugriff auf System Resourcen</H2>
+      <H4><FONT face="Courier New, Courier, mono">AudioSystem</FONT></H4>
+      <P>Durch die Klasse <B><FONT face="Courier New, Courier, mono">AudioSystem</FONT></B> 
+        (sie mu&szlig; nicht erzeugt werden) k&ouml;nnen alle installierten Resourcen 
+        erfragt und angesprochen werden durch <A href="info.html">info</A> Objekte.</P>
+      <UL>
+        <LI><FONT face="Courier New, Courier, mono" size="-1">Mixers</FONT></LI>
+        <LI><FONT face="Courier New, Courier, mono" size="-1"><A href="lines.html">Lines</A></FONT></LI>
+        <LI><FONT face="Courier New, Courier, mono" size="-1">Format</FONT> <FONT face="Courier New, Courier, mono" size="-1">conversions</FONT></LI>
+        <LI><FONT face="Courier New, Courier, mono" size="-1">Files</FONT><FONT size="-1"> 
+          and <FONT face="Courier New, Courier, mono">streams</FONT></FONT></LI>
+      </UL>
+      <P>Jede Klasse gibt mit z.B. </P>
+      <PRE><FONT face="Courier New, Courier, mono">static Mixer.Info[] <B>get</B>Mixer<B>Info</B>();</FONT></PRE>
+      <P><FONT face="Courier New, Courier, mono"><B>Information Objects</B></FONT>. 
+        Dieses Ojekt enth&auml;lt Informationen wie z.B.:</P>
+      <UL>
+        <LI><FONT size="-1">Name</FONT></LI>
+        <LI><FONT size="-1">Version</FONT></LI>
+        <LI><FONT size="-1">Vendor (Hersteller)</FONT></LI>
+        <LI><FONT size="-1">Description</FONT></LI>
+      </UL>
+      <P>Durch das Informations Ojekt kann dann die gew&uuml;nschte Device angesprochen 
+        werden:</P>
+      <PRE>TargetDataLine line;
+
+// generate a info object
+DataLine.Info info = <B>new</B> DataLine<B>.Info(TargetDataLine</B>.class, format);
+// format is an AudioFormat object
+// Obtain and open the line..
+try { 
+    line = (TargetDataLine) AudioSystem.<B>getLine(info)</B>;          
+    line.open(format); 
+} catch (LineUnavailableException ex) { 
+    // Handle the error. 
+}
+</PRE>
+      <P>Alternativ kann man auch Konstanten verwenden:<BR>
+      </P>
+      <PRE>
+try {
+    line = (Port) AudioSystem.getLine(<B>Port.Info.MICROPHONE</B>);
+}
+</PRE>
+      <H4>Rechte f&uuml;r Audio Resourcen</H4>
+      <P>Die <FONT face="Courier New, Courier, mono">AudioPermission</FONT> class 
+        regelt welche Rechte ein Applet/eine Application bez&uuml;glich des Audio 
+        Systems hat:</P>
+      <UL>
+        <LI>Ein applet, das mit einem <FONT face="Courier New, Courier, mono">applet 
+          security manager</FONT> l&auml;uft kann play, aber nicht record. </LI>
+        <LI>An application running with no security manager can both play and 
+          record audio.</LI>
+        <LI>An application running with the default security manager can play, 
+          but not record, audio</LI>
+      </UL>
+      <P><BR>
+      </P>
+    </TD>
+  </TR>
+</TABLE>
+<HR size="1">
+<P><I><A href="javaSoundClasses.html">Java Sound</A></I>.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="sampled.html#info">prev</A>&nbsp;&nbsp;<A HREF="midi.html">next</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ 
+  back to&nbsp;<A HREF="../../index.html"> a p a g e 4 u </A>]</P>
+  
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-11922467-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  
+</BODY></HTML>

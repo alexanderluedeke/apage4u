@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib
+        PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"
+	"http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+
+<!-- a tag library descriptor -->
+
+<taglib>
+  <!-- after this the default space is "http://java.sun.com/j2ee/dtds/jsptaglibrary_1_2.dtd" -->
+
+  <tlibversion>1.0</tlibversion>
+  <jspversion>1.1</jspversion>
+  <shortname>millhouse tags</shortname>
+  <uri>/tagdoc/</uri>
+  <info>
+	A tag library for Millhouse
+  </info>
+
+
+	<tag> 
+		<name>PrintScoreNote</name>
+		<tagclass>mttags.PrintScoreNoteTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>Prints a ScoreNote as a table row or all ScoreNotes as a table</info>
+		<attribute> 
+			<name>jndiName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue> 
+		</attribute> 
+		<attribute> 
+			<name>index</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue> 
+		</attribute> 
+	</tag> 
+	
+	<tag> 
+		<name>PrintMidiNote</name>
+		<tagclass>mttags.PrintMidiNoteTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>Prints a MidiNote as a table row or all MidiNotes as a table</info>
+		<attribute> 
+			<name>jndiName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue> 
+		</attribute> 
+		<attribute> 
+			<name>index</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue> 
+		</attribute> 
+	</tag> 
+
+	<tag> 
+		<name>PrintContainerPool</name>
+		<tagclass>mttags.PrintContainerPoolTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>Prints a object of the ContainerPool or all objects</info>
+		<attribute> 
+			<name>jndiName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue> 
+		</attribute> 
+		<attribute> 
+			<name>index</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue> 
+		</attribute> 
+	</tag> 
+
+	<tag> 
+		<name>PrintMetaInfoPool</name>
+		<tagclass>mttags.PrintMetaInfoPoolTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>Prints a object of the MetaInfoPool or all objects</info>
+		<attribute> 
+			<name>jndiName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue> 
+		</attribute> 
+		<attribute> 
+			<name>index</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue> 
+		</attribute> 
+	</tag> 
+
+	<tag> 
+		<name>List</name>
+		<tagclass>mttags.ListTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>List the Music objects on the server</info>
+	</tag> 
+	
+	<tag> 
+		<name>LookUp</name>
+		<tagclass>mttags.LookUpTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>Gets a Music Object from the server by its JNDI name.</info>
+		<attribute> 
+			<name>jndiName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue> 
+		</attribute> 
+	</tag> 
+	
+	<tag> 
+		<name>PrintAudioPool</name>
+		<tagclass>mttags.PrintAudioPoolTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>Prints a object of the AudioPool or all objects</info>
+		<attribute> 
+			<name>jndiName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue> 
+		</attribute> 
+		<attribute> 
+			<name>index</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue> 
+		</attribute> 
+	</tag> 
+
+</taglib>

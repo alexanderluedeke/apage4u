@@ -1,0 +1,66 @@
+<HTML>
+<HEAD>
+<TITLE>apage4u java sound - sampled audio</TITLE>
+<META name="Content-Type" content="text/html; charset=iso-8859-1">
+<LINK REL="STYLESHEET" type="text/css" href="Layout.css">
+</HEAD>
+<BODY bgcolor="#FFFFFF">
+
+<P><I><A href="javaSoundClasses.html">Java Sound</A></I>.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="sampled.html">prev</A>&nbsp;&nbsp;<A HREF="Bsp2_AdvancedExamples.html">next</A></P>
+<HR size="1">
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=101% HEIGHT=70%>
+  <TR> 
+    <TD VALIGN=CENTER><!-- Begin text --> 
+      <H2>1.2 Basic Examples - sampled audio</H2>
+      <P>Die Beispiele orientieren sich an den gleichnamigen Klasse von Matthias 
+        Pfisterer. Die Klassen k&ouml;nnen unter <A href="http://www.jsresources.org/examples/" target="Pfisterer"><FONT face="Courier New, Courier, mono">http://www.jsresources.org/examples/</FONT></A> 
+        downgeloaded werden.</P>
+      <H3>&nbsp;</H3>
+      <H3>1.2.1 SimpleAudioPlayer</H3>
+      <P>Wiedergabe einer Audio-Datei. Es sei an das Ger&auml;tekonzept von JavaSound 
+        erinnert. Der audio-output der soundcard wird &uuml;ber das interface 
+        <B>SourceDataLine</B> angesprochen.</P>
+      <P><I>Konzept:</I> streaming (real-time Daten bzw. zu viele Daten für den 
+        Speicher)</P>
+      <P><IMG src="Images/SimpleAudioPlayer_550.gif" width="549" height="435"></P>
+      <P>Abwechselnd werden Audio-Daten aus einem AudioInputStream mit read gelesen 
+        und in einen Buffer geschrieben und anschliessend werden die Daten des 
+        Buffers mit write in die SourceDataLine geschrieben.</P>
+      <H3>&nbsp;</H3>
+      <H3>1.2.2 ClipPlayer</H3>
+      <P>Wiedergabe einer Audio-Datei. Der audio-output der soundcard wird &uuml;ber 
+        das interface <B>Clip</B> angesprochen.</P>
+      <P><I>Konzept:</I> Audio Daten befinden sich preloaded im Speicher.</P>
+      <P><IMG src="Images/ClipPlayer_550.gif" width="546" height="341"></P>
+      <P>Die methode loop startet nicht nur die Wiedergabe, sondern ihr Argument 
+        gibt auch an wie oft Wiederholt werden soll. ClipPlayer registriert sich 
+        als Listener beim clip, um anschlie&szlig;end close und exit sagen zu 
+        k&ouml;nnen. </P>
+      <H3>&nbsp;</H3>
+      <H3>1.2.3 SimpleRecorder</H3>
+      <P>Aufnahme einer Audio-Datei. Der audio-input der soundcard wird &uuml;ber 
+        das interface <B>TargetDataLine</B> angesprochen. Der inputPort kann z.B. 
+        der Mikrophone-Eingang sein.</P>
+      <P><IMG src="Images/SimpleRecorder_550.gif" width="546" height="302"></P>
+    </TD>
+  </TR>
+</TABLE>
+<HR size="1">
+<P><I><A href="javaSoundClasses.html">Java Sound</A></I>.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="sampled.html">prev</A>&nbsp;&nbsp;<A HREF="Bsp2_AdvancedExamples.html">next</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ 
+  back to&nbsp;<A HREF="../../index.html"> a p a g e 4 u </A>]</P>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-11922467-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</BODY></HTML>

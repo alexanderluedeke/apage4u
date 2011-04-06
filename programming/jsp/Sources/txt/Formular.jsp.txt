@@ -1,0 +1,43 @@
+<%-- Fetching the data from an HTML form --%>
+<%-- Also generates the form --%>
+
+<%@ page import="java.util.*" %>
+
+<HTML>
+<BODY>
+<H1>Formular</H1>
+
+<%
+	Enumeration f = request.getParameterNames();
+	
+	// Wenn der Request keine Felder hat 
+	if(!f.hasMoreElements()) { 
+%>
+
+<%-- Druecken des Buttons schickt die selbe Datei zurueck. --%>
+<FORM method="POST" action="Formular.jsp">
+	<%
+		for(int i = 0; i < 3; i++) {
+	%>
+	    	Feld <%= i %> &nbsp; <INPUT type="text" size="20" name="Feld<%=i%>" value="Wert<%=i%>"><br>
+	<% } %>
+		<%-- Absende-Button erzeugen. --%>
+		<INPUT type=submit Value="Senden">
+</FORM>
+<%
+	}
+%>
+
+<%
+	Enumeration flds = request.getParameterNames();
+	while(flds.hasMoreElements()) {
+		String field = (String) flds.nextElement();
+		String value = request.getParameter(field);
+%>
+  		<li><%= field %> = <%= value %></li>
+<%
+	} 
+%>
+
+</BODY>
+</HTML>

@@ -1,0 +1,1320 @@
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta http-equiv="CONTENT-LANGUAGE" content="de">
+   <meta name="ROBOTS" content="INDEX,FOLLOW">
+   <meta name="AUTHOR" content="Alexander Luedeke">
+   <title>apage4u - neural networks</title>
+   	<LINK rel="SHORTCUT ICON" href="../../favicon.ico">
+	<LINK rel="icon" href="../../favicon.ico" type="image/ico">
+   <base target="_self">
+<link rel="stylesheet" type="text/css" href="Layout.css">
+<script LANGUAGE="JavaScript">
+<!-- 
+function zeigen(){}
+function verstecken(){}
+function extra_fenster()
+{	alert("Diese Funktion steht erst ab JavaScript 1.1 zur Verf&uuml;gung.")	}
+// -->
+</script>
+<script LANGUAGE="JavaScript1.2" SRC="ZeigenVerstecken.js">
+<!-- 
+// -->
+</script>
+
+</head>
+<body text="#FF8C00" bgcolor="#000000" class="HTML">
+&nbsp;
+<br><font size=+3>&nbsp;N</font><font color="#D3D3D3"><font size=+2>euronale
+</font></font><font size=+3>N</font><font color="#D3D3D3"><font size=+2>etze</font></font>
+<hr SIZE="1" WIDTH="97%">
+<blockquote>
+<center><b><font size=+3>N<font color="#A9A9A9">europraktikum&nbsp; </font>P<font color="#A9A9A9">oliceman</font></font></b>
+<p>von Alexander L&uuml;deke
+<p>Osnabr&uuml;ck, 06.11.99
+<p>eine Veranstaltung von Herrn Sperrschneider</center>
+
+<p><br>
+<br>&nbsp;
+<center><table BORDER=0 CELLSPACING=0 CELLPADDING=0 COLS=2 WIDTH="500" >
+<tr>
+<td VALIGN=TOP><font size=-1><font face="Humanst521 BT">I.&nbsp;&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644853">Netzarchitektur</a></font>
+<br><font size=-1><font face="Humanst521 BT">2.&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644854">LVQ</a></font>
+<dir><font size=-1><font face="Humanst521 BT">2.1&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644855">LVQ1</a></font>
+<br><font size=-1><font face="Humanst521 BT">2.2&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644856">LVQ2.1</a></font>
+<br><font size=-1><font face="Humanst521 BT">2.3&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644857">LVQ3</a></font></dir>
+<font size=-1><font face="Humanst521 BT">3.&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644858">Implementierung</a></font>
+<dir><font size=-1><font face="Humanst521 BT">3.1&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644859">Model-View-Controler</a></font>
+<br><font size=-1><font face="Humanst521 BT">3.2&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644860">Vorbereitung</a></font>
+<br><font size=-1><font face="Humanst521 BT">3.3&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644861">Initialisierung</a></font>
+<br><font size=-1><font face="Humanst521 BT">3.4&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644862">Learning
+Function</a></font>
+<br><font size=-1><font face="Humanst521 BT">3.5&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644863">Learning
+und Training</a></font>
+<br><font size=-1><font face="Humanst521 BT">3.6&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644864">getDistance</a></font></dir>
+</td>
+
+<td VALIGN=TOP><font size=-1><font face="Humanst521 BT">4.&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644865">Die
+K&ouml;rpersprache der Polizisten</a></font>
+<br><font size=-1><font face="Humanst521 BT">5.&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644866">Das
+Training</a></font>
+<br><font size=-1><font face="Humanst521 BT">6.&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644867">Interpretation
+der Ergebnisse</a></font>
+<br><font size=-1><font face="Humanst521 BT">7.&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644868">verbessertes
+LVQ</a></font>
+<br><font size=-1><font face="Humanst521 BT">8.&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644869">Ausblick</a></font>
+<br><font size=-1><font face="Humanst521 BT">9.&nbsp;&nbsp;&nbsp; </font><a href="#_Toc466644870">Bugs</a></font>
+<br><font size=-1><font face="Humanst521 BT">10.&nbsp; </font><a href="#_Toc466644871">Literatur</a></font>
+<p><font size=-1><font face="Humanst521 BT">11.&nbsp; </font><a href="#_download">Download</a></font></td>
+</tr>
+</table></center>
+
+<br>&nbsp;
+<br>&nbsp;
+<blockquote><a NAME="_Toc466644853"></a><b><i><font face="Humanst521 BT">1.
+Netzarchitektur</font></i></b>
+<dir>
+<dir><font size=-1><font face="Humanst521 BT">Die Aufgabe bestand darin
+primitive Vektorgrafiken mit Hilfe eines Netzes zu klassifizieren. Als
+Lernverfahren wurde deshalb LVQ gew&auml;hlt. Nach Zell, S. 171, versteht
+man unter LVQ (klassisch): <i>Learning vector quantization.
+</i>Einschichtiges
+neuronales Netz, d.h. Netz mit einer Schicht aktiver Neuronen, den Kohonen-Neuronen,
+(evtl. mit vorgeschalteten Eingabeneuronen ohne Informationsverarbeitung).
+Ihre Gewichte werden durch ein einfaches Lernverfahren bestimmt, welches
+nur die Eingabe sowie die Klasseninformation nutzt. LVQ ist ein &uuml;berwachtes
+Lernverfahren, bei dem - im Gegensatz zu den selbstorganisierenden Karten
+(<i>self organizing maps</i>) - zu jedem Eingabevektor bekannt sein mu&szlig;,
+zu welcher Klasse (Kategorie) er geh&ouml;rt. Bei der lernenden Vektorquantisierung
+gibt es eine (ungeordnete) Menge von sog. <i>Codebook-Vektoren </i>(Vektoren
+mit freien Parametern, Referenzvektoren), die so im Eingaberaum (der Raum
+der Eingabevektoren
+</font><font face="Georgia">X<sub>1</sub>, X<sub>2</sub>,
+... ,X<sub>p</sub></font><font face="Humanst521 BT">) verteilt werden sollen,
+da&szlig; sie ihn m&ouml;glichst gut abdecken. Es kann mehrere Codebook-Vektoren
+f&uuml;r jede Klasse von Eingabevektoren geben. Ein neuer oder bereits
+trainierter Eingabevektor wird parallel mit allen Referenzvektoren verglichen
+und derjenige Vektor, der ihm am &auml;hnlichsten ist, gibt seine Klasse
+an. In unserer eingef&uuml;hrten Notation ist ein Codebook-Vektor (von
+Kohonen mit m<sub>j </sub>bezeichnet) nichts anderes als der Gewichtsvektor
+</font><font face="Georgia">W<sub>j</sub>
+= (w<sub>1j</sub>, ... , w<sub>nj</sub>)</font><font face="Humanst521 BT">eines
+Kohonen-Neurons </font><font face="Georgia">j</font><font face="Humanst521 BT">,
+das von den </font><font face="Georgia">n</font><font face="Humanst521 BT">
+Eingabeneuronen seine Eingabe erh&auml;lt.</font></font>
+<br>&nbsp;
+<p><img SRC="Kohonen.gif" height=170 width=500></dir>
+</dir>
+
+<dir>
+<dir><i><font face="Humanst521 BT"><font size=-1>Abbildung:</font></font></i>
+<dir>
+<dir><font size=-2><font face="Humanst521 BT">Netzstruktur der lernenden
+Vektorquantisierung. Jedes Neuron der Eingabeschicht ist vollst&auml;ndig
+mit jedem Neuron der LVQ-Schicht verbunden. </font><font face="Georgia">W<sub>j</sub></font><font face="Humanst521 BT">ist
+der Gewichtsvektor vom Kohonen-Neuron j.</font></font></dir>
+</dir>
+</dir>
+</dir>
+<a NAME="_Toc466550848"></a><a NAME="_Toc466644854"></a><b><i><font face="Humanst521 BT">2.
+LVQ</font></i></b>
+<br>&nbsp;
+<blockquote>
+<blockquote><a NAME="_Toc466550849"></a><a NAME="_Toc466644855"></a><font face="Humanst521 BT">2.1
+LVQ1</font></blockquote>
+</blockquote>
+
+<dir>
+<dir><font face="Humanst521 BT"><font size=-1>Es gibt mehrere Varianten
+der LVQ, z.B. LVQ1 wie es Zell in seinem Buch vorstellt:</font></font>
+<p><font size=-1><font face="Humanst521 BT">Der Eingabevektor </font><font face="Georgia">X
+</font><font face="Humanst521 BT">wird
+parallel mit den Codebook-Vektoren (Gewichts-Vektoren) </font><font face="Georgia">W<sub>1</sub>,
+W<sub>2</sub>, ... , W<sub>m</sub></font><font face="Humanst521 BT"> verglichen.
+Das Neuron
+</font><font face="Georgia">c</font><font face="Humanst521 BT">,
+dessen Gewichtsvektor </font><font face="Georgia">W<sub>c</sub></font><font face="Humanst521 BT">
+zu dem Eingabevektor </font><font face="Georgia">X</font><font face="Humanst521 BT">
+am &auml;hnlichsten ist, ist der Gewinner. Diese &Auml;hnlichkeit (<i>n&auml;chster
+Nachbar</i>) wird durch eine Norm </font><font face="Georgia">|| ||</font><font face="Humanst521 BT">
+realisiert. H&auml;ufig minimiert man die euklidische L<sub>2</sub>-Norm
+der Vektordifferenz </font><font face="Georgia">X-W<sub>j</sub></font><font face="Humanst521 BT">
+oder maximiert das Skalarprodukt </font><font face="Georgia">&lt;X|W<sub>j</sub>></font><font face="Humanst521 BT">.
+Formal lautet dies</font></font>
+<center>
+<p><img SRC="Image1.gif" height=21 width=182><font face="Humanst521 BT"><font size=-1>.</font></font></center>
+
+<p><font size=-1><font face="Humanst521 BT">Bei Verwendung des Skalarprodukts
+als &Auml;hnlichkeitsma&szlig; sieht man, da&szlig; alle Neuronen </font><font face="Georgia">j</font><font face="Humanst521 BT">
+die gewichtete Summe als Netzeingabe </font><font face="Georgia">net<sub>j</sub></font><font face="Humanst521 BT">
+berechnen, n&auml;mlich</font></font>
+<center>
+<p><img SRC="Image2.gif" height=45 width=158><font face="Humanst521 BT"><font size=-1>.</font></font></center>
+
+<p><font size=-1><font face="Humanst521 BT">Die Werte f&uuml;r Gewichtsvektoren
+</font><font face="Georgia">W<sub>j</sub></font><font face="Humanst521 BT">,
+die den Klassifikationsfehler minimieren, k&ouml;nnen als asymptotische
+Werte des LVQ1-Lernverfahrens wie folgt gefunden werden:</font></font>
+<p><font size=-1><font face="Humanst521 BT">Der Gewichtsvektor </font><font face="Georgia">W<sub>c</sub></font><font face="Humanst521 BT">
+des Gewinnerneurons </font><font face="Georgia">c</font><font face="Humanst521 BT">,
+das dem Eingabevektor am &auml;hnlichsten ist, wird dem Eingabevektor noch
+&auml;hnlicher gemacht, wenn </font><font face="Georgia">c</font><font face="Humanst521 BT">
+der gleichen Klasse wie der Eingabevektor angeh&ouml;rt, sonst un&auml;hnlicher.
+Dies geschieht durch Addition bzw. Subtraktion eines variablen Bruchteils
+</font><font face="Math1">a
+</font><font face="Humanst521 BT">des
+Differenzenvektors
+</font><font face="Georgia">X(t)-W<sub>c</sub>(t)</font><font face="Humanst521 BT">.
+Alle &uuml;brigen Neuronen </font><font face="Georgia">W<sub>j</sub> </font><font face="Humanst521 BT">bleiben
+unver&auml;ndert.</font></font>
+<p><img SRC="Image3.gif" height=48 width=241><font face="Georgia"><font size=-1>falls</font></font><img SRC="Image4.gif" height=45 width=161>
+<p><img SRC="Image5.gif" height=21 width=104><img SRC="Image6.gif" height=21 width=45>
+<p><font size=-1><font face="Humanst521 BT">Bei diesem Verfahren ist </font><font face="Georgia">0&lt;</font><font face="Math1">a(</font><font face="Georgia">t</font><font face="Math1">)</font><font face="Georgia">&lt;1</font><font face="Humanst521 BT">
+und </font><font face="Math1">a(</font><font face="Georgia">t</font><font face="Math1">)
+</font><font face="Humanst521 BT">kann
+konstant oder mit </font><font face="Georgia">t</font><font face="Humanst521 BT">
+monoton fallen (oft linear mit </font><font face="Math1">a</font><font face="Georgia">(0)=0.1</font><font face="Humanst521 BT">).</font></font>
+<p><img SRC="Learn.gif" height=303 width=500>
+<p><i><font face="Humanst521 BT"><font size=-1>Abbildung:</font></font></i>
+<dir>
+<dir><font size=-2><font face="Humanst521 BT">Adaption des n&auml;chsten
+Gewichtsvektors </font><font face="Georgia">W<sub>c</sub>(t)</font><font face="Humanst521 BT">
+zum Eingabevektor </font><font face="Georgia">X(t)</font><font face="Humanst521 BT">.
+Hier sind die Eingabevektoren als kleine Kreise, die Gewichtsvektoren als
+Pfeile dargestellt. Weiterhin ist Klasse(</font><font face="Georgia">X</font><font face="Humanst521 BT">)
+= Klasse(</font><font face="Georgia">W<sub>c</sub></font><font face="Humanst521 BT">).</font></font></dir>
+</dir>
+<a NAME="_Toc466550850"></a><a NAME="_Toc466644856"></a><font face="Humanst521 BT">2.2
+LVQ2.1</font>
+<p><font size=-1><font face="Humanst521 BT">Bei dem Verfahren LVQ2.1 ist
+die Klassifikation der Eingabe identisch wie bei LVQ1, nur die Modifikation
+der Gewichtsvektoren beim Lernen ist anders. LVQ2.1 sucht den n&auml;chsten
+Gewichtsvektor </font><font face="Georgia">W<sub>i</sub></font><font face="Humanst521 BT">
+und den &uuml;bern&auml;chsten </font><font face="Georgia">W<sub>j</sub></font><font face="Humanst521 BT">.
+Es findet nur eine Gewichtsadaption statt, wenn folgende Voraussetzungen
+erf&uuml;llt sind:</font></font></dir>
+</dir>
+
+<ul>
+<ul>
+<ul>
+<li>
+<font face="Humanst521 BT"><font size=-1>Die Klasse der beiden Gewichtsvektoren
+sind unterschiedlich.</font></font></li>
+
+<li>
+<font size=-1><font face="Georgia">X</font><font face="Humanst521 BT">
+geh&ouml;rt einer der beiden Klassen von </font><font face="Georgia">W<sub>i</sub></font><font face="Humanst521 BT">
+und </font><font face="Georgia">W<sub>j</sub></font><font face="Humanst521 BT">
+an.</font></font></li>
+
+<li>
+<font size=-1><font face="Georgia">X</font><font face="Humanst521 BT">
+liegt in einem "Fenster" entlang der Mittelsenkrechte zwischen beiden Klassen.</font></font></li>
+</ul>
+</ul>
+</ul>
+
+<dir>
+<dir><font face="Humanst521 BT"><font size=-1>Sind die Voraussetzungen
+erf&uuml;llt, so werden beide Gewichtsvektoren entsprechend ver&auml;ndert:
+Der Vektor, dessen Klasse mit der von X &uuml;bereinstimmt, wird in Richtung
+des Eingabevektors verschoben, der n&auml;chste Vektor, dessen Klasse nicht
+mit der von X &uuml;bereinstimmt, wird von X weggeschoben. Dadurch dreht
+sich die durch Mittelsenkrechte der Verbindungslinie gebildete Klassengrenze.</font></font>
+<p><a NAME="_Toc466550851"></a><a NAME="_Toc466644857"></a><font face="Humanst521 BT">2.3
+LVQ3</font>
+<p><font face="Humanst521 BT"><font size=-1>LVQ3 versucht folgendes Problem
+zu l&ouml;sen: Das Lernverfahren von LVQ2.1 verzerrt sehr stark die Dichte
+der Vektoren, so da&szlig; die Verteilung der Codebook-Vektoren nicht mehr
+die Dichte der Eingabevektoren wiederspiegelt.</font></font>
+<br>&nbsp;
+<br>&nbsp;</dir>
+</dir>
+<a NAME="_Toc466550852"></a><a NAME="_Toc466644858"></a><b><i><font face="Arial">3.
+Implementierung</font></i></b>
+<dir><a NAME="_Toc466550853"></a><a NAME="_Toc466644859"></a><font face="Humanst521 BT">3.1
+Model-View-Controler</font>
+<blockquote><font face="Humanst521 BT"><font size=-1>Dieses Konzept zielt
+darauf, grafische und algorithmische Elemente in einem System beliebig
+verkn&uuml;pfen und wiederverwenden zu k&ouml;nnen. Eine Trennung der Funktionalit&auml;t
+soll &Uuml;bersichtlichkeit sichern. Im Hintergrund stehen die klassischen
+Begriffe</font></font>
+<p><i><font face="Humanst521 BT"><font size=-1>&nbsp;&nbsp;&nbsp; Model</font></font></i>
+<br><font face="Humanst521 BT"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ein wiederverwendbarer Algorithmus, also zum Beispiel das Netz und der
+Lern-Algorithmus.</font></font>
+<br><i><font face="Humanst521 BT"><font size=-1>&nbsp;&nbsp;&nbsp; View</font></font></i>
+<br><font face="Humanst521 BT"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+wiederverwendbare Schnittstellen zum Benutzer, also zum Beispiel die Fenster
+und Dialoge.</font></font>
+<br><i><font face="Humanst521 BT"><font size=-1>&nbsp;&nbsp;&nbsp; Controller</font></font></i>
+<br><font face="Humanst521 BT"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+die n&ouml;tige Logik, um alles zu verbinden.</font></font>
+<p><font size=-1><font face="Humanst521 BT">F&uuml;r die Implementierung
+in Java hei&szlig;t das: Den grafischen Objekten wird ein sogenannter Listener
+mit </font><font face="Courier New">addActionListener()</font><font face="Humanst521 BT">zugewiesen.
+Wenn nun ein Men&uuml; oder Button (<i>View</i>) gedr&uuml;ckt wird, leitet
+der ActionListener ein ActionEvent an den <i>Controller</i> weiter, der
+die Methode </font><font face="Courier New">actionPerformed </font><font face="Humanst521 BT">implementiert
+hat. Diese Methode ruft dann im <i>Model </i>eine weitere Methode auf.</font></font>
+<p><font face="Humanst521 BT"><font size=-1>Hier eine &Uuml;bersicht der
+verwendeten Klassen:</font></font>
+<p><img SRC="ClassDiagramm.gif" height=693 width=500>
+<p><font face="Humanst521 BT"><font size=-1>Die <i>View</i>, also die Benutzeroberfl&auml;che,
+sah dann so aus:</font></font>
+<p><img SRC="Windows.jpg" height=357 width=471>
+<br>&nbsp;</blockquote>
+<a NAME="_Toc466550854"></a><a NAME="_Toc466644860"></a><font face="Humanst521 BT">3.2
+Vorbereitung</font></dir>
+
+<blockquote><font size=-1><font face="Humanst521 BT">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Ich erzeuge eine Datei </font><font face="Courier New">Trees.tre</font><font face="Humanst521 BT">
+mit k Pattern f&uuml;r das sp&auml;tere Training. Jede Zeile enth&auml;lt</font></font>
+<ul>
+<ul>
+<li>
+<font size=-1><font face="Humanst521 BT">die Anzahl der Eingabevektoren
+</font><font face="Courier New">inputCount</font><font face="Georgia">.</font></font></li>
+
+<li>
+<font face="Humanst521 BT"><font size=-1>einen linearisierten Baum (Polizisten),
+dieser Vektor kann auf Wunsch normiert werden, d.h. seine L&auml;nge betr&auml;gt
+dann1. Es erscheint sinnvoll die Normierung auch "abschalten" zu k&ouml;nnen,
+da laut Snns, S. 138, unerw&uuml;nschtes Verhalten zumindest bei DLVQ auftreten
+kann.</font></font></li>
+
+<li>
+<font face="Humanst521 BT"><font size=-1>die Klasse des Vektors.</font></font></li>
+
+<li>
+<font face="Humanst521 BT"><font size=-1>Dies Datei wird mit Hilfe des
+Programms erzeugt.</font></font></li>
+</ul>
+</ul>
+</blockquote>
+
+<dir><a NAME="_Toc466550855"></a><a NAME="_Toc466644861"></a><font face="Humanst521 BT">3.3
+Initialisierung</font></dir>
+
+<blockquote>
+<ul>
+<ul>
+<li>
+<font size=-1><font face="Humanst521 BT">Klasse </font><font face="Courier New">Net</font><font face="Humanst521 BT">:
+Ich instanziere mit dem Constructor </font><font face="Courier New">net()</font><font face="Humanst521 BT">ein
+Objekt das als Netz fungieren soll, dieses Objekt verkapselt:</font></font></li>
+</ul>
+</ul>
+
+<ul>
+<ul>
+<ul>
+<li>
+<font size=-1><font face="Humanst521 BT">Fest: die Dimension der Eingabevektoren
+</font><font face="Courier New">inputDimension
+</font><font face="Humanst521 BT">und
+damit die Anzahl der Eingabeneuronen</font></font></li>
+
+<li>
+<font size=-1><font face="Humanst521 BT">Fest: die Anzahl der Klassen,
+d.h. der Codebook-Vektoren, </font><font face="Courier New">classCount</font><font face="Humanst521 BT">.</font></font></li>
+
+<li>
+<font size=-1><font face="Humanst521 BT">Variable: Die Codebook-Vektoren
+</font><font face="Courier New">codebookVec[]</font><font face="Georgia">
+W<sub>j</sub></font><font face="Humanst521 BT">. Letzte Komponente ist
+der Name der Klasse, die er repr&auml;sentiert.</font></font></li>
+</ul>
+</ul>
+</ul>
+
+<ul>
+<ul>
+<li>
+<font size=-1><font face="Humanst521 BT">Die Klasse </font><font face="Courier New">net</font><font face="Humanst521 BT">
+wird &uuml;ber folgende Methoden verf&uuml;gen:</font></font></li>
+</ul>
+</ul>
+
+<ul>
+<ul>
+<ul>
+<li>
+<font face="Courier New"><font size=-1>getInputDimension</font></font></li>
+
+<li>
+<font face="Courier New"><font size=-1>getClassCount</font></font></li>
+
+<li>
+<font size=-1><font face="Courier New">getCodebook(j)</font><font face="Humanst521 BT">.
+Alle Komponenten des Vektors, ohne die letzte.</font></font></li>
+
+<li>
+<font size=-1><font face="Courier New">getCodebookClass(j)</font><font face="Georgia">.
+</font><font face="Humanst521 BT">Letzte
+Komponente des Vektors.</font></font></li>
+
+<li>
+<font size=-1><font face="Courier New">Learn</font><font face="Humanst521 BT">
+wendet die unter </font><font face="Courier New">learningFct</font><font face="Humanst521 BT">
+abgelegt Lernfunktion auf die das Objekt </font><font face="Courier New">net</font><font face="Humanst521 BT">
+an.</font></font></li>
+</ul>
+</ul>
+</ul>
+
+<ul>
+<ul><font face="Humanst521 BT"><font size=-1>Es gibt zwei Initialisierungsmethoden:</font></font></ul>
+</ul>
+
+<ol>
+<ol>
+<ol>
+<ul>
+<li>
+<font size=-1><font face="Courier New">random-input:</font><font face="Humanst521 BT">
+Ich w&auml;hle zuf&auml;llig aus Tree.txt soviele Zeilen unterschiedlicher
+Klassen aus, da&szlig; ich f&uuml;r jede Klasse ein "Beispiel" habe und
+initialisiere mit diesen Eingabevektoren die Codebook-Vektoren.</font></font></li>
+
+<li>
+<font size=-1><font face="Courier New">Random:</font><font face="Humanst521 BT">
+Initialisierung zuf&auml;llig durch Input-Vektoren, wobei nicht jede Klassen
+vertreten sein mu&szlig;. Folge: Die Codebook-Vektoren k&ouml;nnen eine
+Klasse entstammen, der sie nicht angeh&ouml;hren.</font></font></li>
+</ul>
+</ol>
+</ol>
+</ol>
+
+<ul>
+<ul>
+<li>
+<font size=-1><font face="Humanst521 BT">Klasse </font><font face="Courier New">Trees</font><font face="Humanst521 BT">:
+Ich instanziere mit dem Constructor </font><font face="Courier New">Trees()</font><font face="Humanst521 BT">ein
+Objekt, das die </font><font face="Courier New">inputDimension</font><font face="Humanst521 BT">,
+die Anzahl der Trainingsmuster </font><font face="Courier New">treesCount</font><font face="Humanst521 BT">
+und die Trees </font><font face="Courier New">inputVec[]</font><font face="Humanst521 BT">
+selbst enth&auml;lt.</font></font></li>
+</ul>
+</ul>
+
+<ul>
+<ul>
+<li>
+<font size=-1><font face="Humanst521 BT">Klasse </font><font face="Courier New">Training:</font><font face="Humanst521 BT">
+In dem Objekt dieser Klasse werden die Anzahl der Trainings-Zyklen </font><font face="Courier New">Cycles</font><font face="Humanst521 BT">,
+die Lernrate </font><font face="Courier New">factor</font><font face="Humanst521 BT">,
+der Name der Trainingsfunktion </font><font face="Courier New">learningFunc</font><font face="Humanst521 BT">
+und der Distanzfunktion </font><font face="Courier New">distance</font><font face="Humanst521 BT">.
+Weiter werden hier Zwischenergebnisse des Trainings als </font><font face="Courier New">viewValues</font><font face="Humanst521 BT">
+abgelegt.</font></font></li>
+
+<li>
+<font size=-1><font face="Humanst521 BT">Klasse </font><font face="Courier New">Policeman:
+</font><font face="Humanst521 BT">Hier
+befindet sich das Hauptprogramm, das eigentlich nur <i>View</i> erzeugt.</font></font></li>
+</ul>
+</ul>
+</blockquote>
+
+<dir><a NAME="_Toc466550856"></a><a NAME="_Toc466644862"></a><font face="Humanst521 BT">3.4
+Learning Function</font>
+<blockquote>&nbsp;
+<p><font size=-1><font face="Humanst521 BT">Ich habe als Lernfunktion eine
+Kombination aus Hyperbel- und Wurzelfunktion implementiert. </font><font face="Math1">a
+</font><font face="Humanst521 BT">bezeichnet
+den Startwert und <i>step
+</i>den Schritt, d.h in welchem Zyklus wir uns
+befinden.</font></font>
+<p><img SRC="Image9.gif" height=175 width=285>
+<p><img SRC="Image10.gif" height=46 width=46>
+<p><font face="Humanst521 BT"><font size=-1>Es hat sich als g&uuml;nstig
+erwiesen, bei normierten Vektoren 0.1 zu w&auml;hlen bzw. den Quotient
+aus 0.1 und L&auml;nge der Input-Vektoren.</font></font>
+<br>&nbsp;</blockquote>
+<a NAME="_Toc466550857"></a><a NAME="_Toc466644863"></a><font face="Humanst521 BT">3.5
+Learn und Training</font>
+<blockquote>&nbsp;
+<p><font size=-1><font face="Humanst521 BT">Dies ist die Methode </font><font face="Courier New">training</font><font face="Humanst521 BT">
+der Klasse Training. Es wird cyles-oft das Netz durch die Input-Vektoren
+trainiert:</font></font>
+<p><font face="Courier New"><font size=-2>static Net training(Net net,Trees
+trees,Training training)</font></font>
+<br><font face="Courier New"><font size=-2>{</font></font>
+<br><font face="Courier New"><font size=-2>int treesCount = trees.getTreesCount();
+//Anzahl der Training-Patterns</font></font>
+<br><font face="Courier New"><font size=-2>int jCode = 0; //Zaehlvariable</font></font>
+<br><font face="Courier New"><font size=-2>int iInput = 0; //Zaehlvariable</font></font>
+<br><font face="Courier New"><font size=-2>int step = 1; //Zaehlvariable</font></font>
+<br><font face="Courier New"><font size=-2>double factor = getTrainingsFactor(training);</font></font>
+<dir>
+<dir>
+<dir><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//Speicherplatz fuer die Zwischen-</font></font></dir>
+<font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//ergebnisse und richtig bzw. falsch</font></font>
+<br><font face="Courier New"><font size=-2>training.viewValues = new</font></font>
+<dir><font face="Courier New"><font size=-2>double[net.codebookCount*2+1][training.cycles+1];</font></font></dir>
+</dir>
+</dir>
+<font face="Courier New"><font size=-2>while(step&lt;getCycles(training)/trees.treesCount+1)
+{</font></font>
+<dir><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//Schleife-Input-Vektoren</font></font></dir>
+<font face="Courier New"><font size=-2>//bzw. cycles</font></font>
+<br><font face="Courier New"><font size=-2>for(int inStep=1;inStep&lt;trees.getTreesCount()+1;inStep++)
+{ iInput = inStep;</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+net = Net.normalizeCodebook(net,getDistance(training));</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+jCode = Net.nextCodebookVec(net,trees,iInput,getDistance(training));</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+net = <b>learn(</b>net,trees,training,jCode,iInput,factor,step);</font></font>
+<br><font face="Courier New"><font size=-2>}</font></font>
+<br><font face="Courier New"><font size=-2>step++;</font></font>
+<br><font face="Courier New"><font size=-2>}</font></font>
+<br><font face="Courier New"><font size=-2>net = Net.normalizeCodebook(net,getDistance(training));</font></font>
+<br><font face="Courier New"><font size=-2>return net;</font></font>
+<br><font face="Courier New"><font size=-2>}</font></font>
+<p><font size=-1><font face="Humanst521 BT">Nun die Methode </font><font face="Courier New">learn</font><font face="Humanst521 BT">
+der Klasse Training. Hier werden die Gleichungen aus 2.1 implementiert.</font></font>
+<p><font face="Courier New"><font size=-2>static Net learn(Net net,Trees
+trees,Training training,int jCode,</font></font>
+<dir>
+<dir><font face="Courier New"><font size=-2>int iInput,double factor,int
+step)</font></font></dir>
+</dir>
+<font face="Courier New"><font size=-2>{</font></font>
+<br><font face="Courier New"><font size=-2>int iClass = 0; //Zaehlvariablen</font></font>
+<br><font face="Courier New"><font size=-2>int iReal = 0;</font></font>
+<br><font face="Courier New"><font size=-2>boolean correct = false;</font></font>
+<br><font face="Courier New"><font size=-2>double newValue = 0.0;</font></font>
+<br><font face="Courier New"><font size=-2>//Der i-te Input-Vektor wird
+vom Netz</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//klassifiziert.</font></font>
+<br><font face="Courier New"><font size=-2>iClass = Net.classify(net,trees,iInput,getDistance(training));</font></font>
+<br><font face="Courier New"><font size=-2>//Tatsaechlich gehoert der i-te
+Input-Vektor</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//der Klasse ... an</font></font>
+<br><font face="Courier New"><font size=-2>iReal = Trees.getInputClass(iInput,trees);</font></font>
+<br><font face="Courier New"><font size=-2>//Input-Vektor richtig klassifiziert</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//vom Netz?</font></font>
+<br><font face="Courier New"><font size=-2>if(iClass==iReal)</font></font>
+<br><font face="Courier New"><font size=-2>correct = true;</font></font>
+<br><font face="Courier New"><font size=-2>else</font></font>
+<br><font face="Courier New"><font size=-2>correct = false; //Distanzen
+und Klassifizierung merken</font></font>
+<br><font face="Courier New"><font size=-2>int jCod = 0;</font></font>
+<br><font face="Courier New"><font size=-2>for(int cInd=1;cInd&lt;net.codebookCount*2+1;cInd++)
+{</font></font>
+<br><font face="Courier New"><font size=-2>jCod++;</font></font>
+<br><font face="Courier New"><font size=-2>training.viewValues[cInd][iInput+(step-1)*trees.treesCount]
+=</font></font>
+<dir>
+<dir>
+<dir>
+<dir><font face="Courier New"><font size=-2>Net.getDistance(net,jCod,trees,iInput,training.distance);</font></font></dir>
+</dir>
+</dir>
+</dir>
+<font face="Courier New"><font size=-2>if(jCod==iClass) {</font></font>
+<br><font face="Courier New"><font size=-2>cInd++;</font></font>
+<br><font face="Courier New"><font size=-2>training.viewValues[cInd][iInput+(step-1)*trees.treesCount]
+= 1.0;</font></font>
+<br><font face="Courier New"><font size=-2>}</font></font>
+<br><font face="Courier New"><font size=-2>else {</font></font>
+<br><font face="Courier New"><font size=-2>cInd++;</font></font>
+<br><font face="Courier New"><font size=-2>training.viewValues[cInd][iInput+(step-1)*trees.treesCount]
+= 2.0;</font></font>
+<br><font face="Courier New"><font size=-2>}</font></font>
+<br><font face="Courier New"><font size=-2>} //Wurde richtig klassifiziert</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//dann findet eine Verstaerkung</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//(Addition)</font></font>
+<br><font face="Courier New"><font size=-2>if(correct)</font></font>
+<br><font face="Courier New"><font size=-2>{</font></font>
+<br><font face="Courier New"><font size=-2>for(int m=1;m&lt;net.getInputDimension()+1;m++)
+{ //Schleife-Komponenten</font></font>
+<br><font face="Courier New"><font size=-2>if(("linear".compareTo(getTrainingFunc(training)))==0)
+{</font></font>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp; newValue
+= net.getCodebookVec(jCode,m)</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++ factor * Math.sqrt(1.0/step) *</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(trees.getInputVec(m,iInput,trees) + net.getCodebookVec(jCode,m));</font></font></b>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp; net.setCodebookVec(jCode,m,newValue);</font></font>
+<br><font face="Courier New"><font size=-2>}</font></font>
+<br><font face="Courier New"><font size=-2>if(("log".compareTo(getTrainingFunc(training)))==0)
+{</font></font>
+<br><b><font face="Courier New"><font size=-2>newValue = net.getCodebookVec(jCode,m)+
+factor * 1.0/Math.log(step+Math.E) *</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(trees.getInputVec(m,iInput,trees) + net.getCodebookVec(jCode,m));</font></font></b>
+<br><font face="Courier New"><font size=-2><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+</b>net.setCodebookVec(jCode,m,newValue);</font></font>
+<br><font face="Courier New"><font size=-2>}</font></font>
+<br><font face="Courier New"><font size=-2>}</font></font>
+<br><font face="Courier New"><font size=-2>}</font></font>
+<br><font face="Courier New"><font size=-2>else //falsch klassifiziert:
+Abschwaechung.</font></font>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir><font face="Courier New"><font size=-2>//(Subtraktion)</font></font></dir>
+</dir>
+</dir>
+</dir>
+</dir>
+</dir>
+</dir>
+</dir>
+<font face="Courier New"><font size=-2>{</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp; for(int m=1;m&lt;net.getInputDimension()+1;m++)
+{</font></font>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//Schleife-Komponenten</font></font></dir>
+</dir>
+</dir>
+</dir>
+</dir>
+<font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp; if(("linear".compareTo(getTrainingFunc(training)))==0)
+{</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+newValue = net.getCodebookVec(jCode,m)</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+– factor * Math.sqrt(1.0/step) *</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(trees.getInputVec(m,iInput,trees) -</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+net.getCodebookVec(jCode,m));net.setCodebookVec(jCode,m,newValue);</font></font></blockquote>
+</dir>
+
+<dir>
+<dir><font face="Courier New"><font size=-2>}</font></font>
+<br><font face="Courier New"><font size=-2>if(("log".compareTo(getTrainingFunc(training)))==0)
+{</font></font>
+<br><font face="Courier New"><font size=-2>newValue = net.getCodebookVec(jCode,m)
+- factor * 1.0/Math.log(step+Math.E) *</font></font>
+<br><font face="Courier New"><font size=-2>(trees.getInputVec(m,iInput,trees)
+– net.getCodebookVec(jCode,m));</font></font>
+<br><font face="Courier New"><font size=-2>net.setCodebookVec(jCode,m,newValue);</font></font>
+<br><font face="Courier New"><font size=-2>}</font></font>
+<br><font face="Courier New"><font size=-2>}</font></font>
+<br><font face="Courier New"><font size=-2>}</font></font>
+<br><font face="Courier New"><font size=-2>return net;</font></font>
+<br><font face="Courier New"><font size=-2>}</font></font></dir>
+</dir>
+</blockquote>
+<a NAME="_Toc466550858"></a><a NAME="_Toc466644864"></a><font face="Humanst521 BT">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3.6 getDistance</font>
+<blockquote><font face="Humanst521 BT"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Die Methode getDistance berechnet nach der Euklidische Norm den Abstand
+von j-tem Codebook-</font></font>
+<br><font face="Humanst521 BT"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+und i-tem Input-Vektor.</font></font>
+<dir><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+static double getDistance(Net net,int indexC,Trees trees,int indexI,String
+distanceFunc)</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+double distance = 0.0;</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//euklidische Norm</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if(("euklid".compareTo(distanceFunc))==0) {</font></font>
+<br>&nbsp;
+<p><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+for(int m=1;m&lt;net.getInputDimension()+1;m++)</font></font>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir>
+<dir><font face="Courier New"><font size=-2>//Schleife-Komponenten</font></font></dir>
+</dir>
+</dir>
+</dir>
+</dir>
+</dir>
+</dir>
+</dir>
+</dir>
+</dir>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<font face="Courier New"><font size=-2>distance+=Math.pow(trees.getInputVec(m,indexI,trees)-</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+net.getCodebookVec(indexC,m),2);</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return Math.sqrt(distance);</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//bei Fehler -1</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return distance = -1.0;</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font>
+<br>&nbsp;
+<p><a NAME="_Toc466550859"></a><a NAME="_Toc466644865"></a><b><i><font face="Arial">4.
+Die K&ouml;rpersprache der Polizisten</font></i></b>
+<p><font face="Humanst521 BT"><font size=-1>Die Aufgabe bestand darin,
+die Zeichen eines Verkehrspolizisten, von dem ich primitive Vektorgrafiken
+erzeugt habe, richtig zu klassifizieren. Es gab drei verschiedene Haltungen
+(Klassen): Fahren, Halt und Achtung.</font></font>
+<menu>
+<li>
+<font face="Humanst521 BT"><font size=-1>Klasse: Fahren</font></font></li><BR>
+<font size=-1><font face="Humanst521 BT">Ein Arm gelte als angewinkelt,
+wenn der Winkel </font><font face="Math1">a</font><font face="Humanst521 BT">
+maximal 44&deg; vom K&ouml;rper abgewinkelt ist:</font></font>
+<p><img SRC="Image11.jpg" height=200 width=200><img SRC="Winkel.gif" height=223 width=250>
+<br>&nbsp;
+<li>
+<font face="Humanst521 BT"><font size=-1>Klasse: Halt</font></font></li>
+
+<p><br><img SRC="Image12.jpg" height=200 width=200>
+<p><font face="Humanst521 BT"><font size=-1>Die Arme sind waagerecht und
+d&uuml;rfen nur jeweils maximal 45&deg; von der Waagerechten abweichen.</font></font>
+<br>&nbsp;
+<li>
+<font face="Humanst521 BT"><font size=-1>Klasse: Achtung</font></font></li>
+
+<br><font face="Humanst521 BT"><font size=-1>Der linke Arm mu&szlig; am
+K&ouml;rper angewinkelt sein und darf maximal 45&deg; von ihm abweichen.
+Der rechte Arm mu&szlig; nach oben zeigen und darf maximal 45&deg; von
+der Senkrechten abweichen.</font></font>
+<br><font face="Humanst521 BT"><font size=-1></font></font>&nbsp;</menu>
+
+<blockquote><img SRC="Image13.jpg" height=200 width=200></blockquote>
+
+<p><br><font face="Humanst521 BT"><font size=-1>In der Vektorgrafik wurde
+nicht die Position der K&ouml;rperteile beschrieben, insofern handelt es
+sich um eine baumartige Strucktur. Auch ihre Form wurde nicht kodiert,
+sondern nur ihre Gr&ouml;&szlig;e, also die Breite und H&ouml;he. Intern
+lag der Polizist als flachgeklopfter Baum, als Vektor vor.</font></font>
+<p><font face="Humanst521 BT"><font size=-1>Kodierung eines Policeman:</font></font>
+<p><img SRC="Codierung.gif" height=461 width=452>
+<br>&nbsp;
+<p><a NAME="_Toc466550860"></a><a NAME="_Toc466644866"></a><b><i><font face="Humanst521 BT">5.
+Das Training</font></i></b>
+<p><font face="Arial"><font size=-1>Zum trainieren des Netzes habe ich
+zu Anfang nur zwei-dimensionale Vektoren verwendet, um die Funktion zu
+pr&uuml;fen:</font></font>
+<p><font face="Arial"><font size=-1>Beispiel1:</font></font>
+<div align=right><font face="Arial"><font size=-1>Inhalt der Dateien</font></font></div>
+
+<dir>
+<dir><font face="Arial"><font size=-1>Beispiel1.net:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font></font><font face="Courier New"><font size=-2>2</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+2</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+random</font></font>
+<br><font face="Arial"><font size=-1>Beispiel1.tre:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font></font><font face="Courier New"><font size=-2>2</font></font>
+<br><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4</font></font>
+<dir>
+<dir>
+<dir>
+<dir><font face="Courier New"><font size=-2>1,0,1</font></font>
+<br><font face="Courier New"><font size=-2>0,1,2</font></font>
+<br><font face="Courier New"><font size=-2>0.51,0.5,2</font></font>
+<br><font face="Courier New"><font size=-2>0.5,0.51,1</font></font></dir>
+</dir>
+</dir>
+</dir>
+</dir>
+</dir>
+
+<div align=right><font face="Arial"><font size=-1>Ausgabe des Programmes</font></font></div>
+<font face="Courier New"><font size=-2>Net "Beispiel1.net" loaded</font></font>
+<br><font face="Courier New"><font size=-2>Input-Dimension = 2</font></font>
+<br><font face="Courier New"><font size=-2>Number of trees = 4</font></font>
+<br><font face="Courier New"><font size=-2>Trees "Beispiel1.tre" loaded</font></font>
+<br><font face="Courier New"><font size=-2>1. Input-Vector: (1.0, 0.0)
+Class: 1</font></font>
+<br><font face="Courier New"><font size=-2>2. Input-Vector: (0.0, 1.0)
+Class: 2</font></font>
+<br><font face="Courier New"><font size=-2>3. Input-Vector: (0.51, 0.5)
+Class: 1</font></font>
+<br><font face="Courier New"><font size=-2>4. Input-Vector: (0.5, 0.51)
+Class: 2</font></font>
+<br><font face="Courier New"><font size=-2>random-input: Net initialized</font></font>
+<br><font face="Courier New"><font size=-2>Fuer die Initalisierung wurde
+der 1. und der 2. Input-Vektor verwendet:</font></font>
+<br><font face="Courier New"><font size=-2>1. Codebook-Vector: (1.0, 0.0)
+Class: 1</font></font>
+<br><font face="Courier New"><font size=-2>2. Codebook-Vector: (0.5, 0.51)
+Class: 2</font></font>
+<br><font face="Courier New"><font size=-2>Bis jetzt werden nur 3 von 4
+Input-Vektoren richtig klassifiziert:</font></font>
+<br><font face="Courier New"><font size=-2>1. Input-Vector: Class: 1 classified:
+1 correct</font></font>
+<br><font face="Courier New"><font size=-2>2. Input-Vector: Class: 2 classified:
+2 correct</font></font>
+<br><font face="Courier New"><font size=-2>3. Input-Vector: Class: 1 classified:
+2</font></font>
+<br><font face="Courier New"><font size=-2>4. Input-Vector: Class: 2 classified:
+2 correct</font></font>
+<br><font face="Courier New"><font size=-2>Nach 200 Zyklen mit Lernrate
+= 0.1 ist auch der 3. Vektor richtig klassifiziert:</font></font>
+<br><font face="Courier New"><font size=-2>1. Input-Vector: Class: 1 classified:
+1 correct</font></font>
+<br><font face="Courier New"><font size=-2>2. Input-Vector: Class: 2 classified:
+2 correct</font></font>
+<br><font face="Courier New"><font size=-2>3. Input-Vector: Class: 1 classified:
+1 correct</font></font>
+<br><font face="Courier New"><font size=-2>4. Input-Vector: Class: 2 classified:
+2 correct</font></font>
+<br><font face="Courier New"><font size=-2>Beim Lernen ver&auml;nderte
+sich der Abstand von Input-Vektor 3 und 1. Codebook-Vektor (1.Spalte)</font></font>
+<br><font face="Courier New"><font size=-2>und 2. Codebook-Vektor (2.Spalte)
+so:</font></font>
+<br><font face="Courier New"><font size=-2>ViewValues: Distance between
+Input-Vector 3 and Codebook-Vectors</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6338171305833717
+&lt; //der 2. Codebook-Vektor</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6407683907636406
+&lt; //wird vom 3. Input-Vektor</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6457558357495242
+&lt; //weggedreht, da falsch</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6497537890779962
+&lt; //klassifiziert. Also er-</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6531227561983093
+&lt; //hoeht sich der Abstand</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6560468877185449
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6586358018382917
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6609610903773521
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6630725578777958
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6650064870577748
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6667902593737326
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6684451243580706
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6699879516460552
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6714323884857542
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6727896521668658
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6740690889132834
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6752785781710011
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6764248315052654
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>...</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6939312063713374
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6943761219961563
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6948092385507889
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6952310455651354
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6956420037381231
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.696042547160374
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6964330853251688
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6968140049516366
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6971856716409731
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6975484313838434
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6979026119348369
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6982485240679032
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6985864627250017
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6989167080687584
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6992395264486525
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6995551712891769
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 0.6998638839074548
+&lt;</font></font>
+<br><font face="Courier New"><font size=-2>0.7000714249274855 &lt; 0.7001658942669701
+//Jetzt wird der 3. Vektor</font></font>
+<br><font face="Courier New"><font size=-2>0.6956058934845069 &lt; 0.6959666912566901
+//richtig klassifiziert,</font></font>
+<br><font face="Courier New"><font size=-2>0.6912599529755278 &lt; 0.6918804075920574
+//also wird der Abstand</font></font>
+<br><font face="Courier New"><font size=-2>0.6870295250130419 &lt; 0.6879031457282474
+//zum 1. Codebook-Vektor</font></font>
+<br><font face="Courier New"><font size=-2>0.6829106999922183 &lt; 0.6840311729731646
+//erhoeht.</font></font>
+<br><font face="Courier New"><font size=-2>0.6788997289477188 &lt; 0.6802609132613473</font></font>
+<br><font face="Courier New"><font size=-2>0.6749930158533615 &lt; 0.6765889393980195</font></font>
+<br><font face="Courier New"><font size=-2>0.6711871103383453 &lt; 0.6730119657432457</font></font>
+<br><font face="Courier New"><font size=-2>0.6674787007953897 &lt; 0.6695268413082421</font></font>
+<br><font face="Courier New"><font size=-2>0.6638646078576836 &lt; 0.6661305432378462</font></font>
+<br><font face="Courier New"><font size=-2>0.660341778222981 &lt; 0.662820170654946</font></font>
+<br><font face="Courier New"><font size=-2>0.6569072788045281 &lt; 0.6595929388443365</font></font>
+<br><font face="Courier New"><font size=-2>0.6535582911897772 &lt; 0.6564461737550059</font></font>
+<br><font face="Courier New"><font size=-2>0.6502921063890249 &lt; 0.6533773068012926</font></font>
+<br><font face="Courier New"><font size=-2>0.6471061198572242 &lt; 0.6503838699446669</font></font>
+<br><font face="Courier New"><font size=-2>0.6439978267732573 &lt; 0.6474634910391239</font></font>
+<br><font face="Courier New"><font size=-2>0.6409648175619274 &lt; 0.6446138894243081</font></font>
+<br><font face="Courier New"><font size=-2>0.6380047736448408 &lt; 0.6418328717515449</font></font>
+<br><font face="Courier New"><font size=-2>0.6351154634071972 &lt; 0.6391183280289349</font></font>
+<br><font face="Courier New"><font size=-2>...</font></font>
+<br><font face="Courier New"><font size=-2>0.5162573858614609 &lt; 0.527291817782644</font></font>
+<br><font face="Courier New"><font size=-2>0.5157879739185964 &lt; 0.5268486949713203</font></font>
+<br><font face="Courier New"><font size=-2>0.5153255617401123 &lt; 0.5264121597234244</font></font>
+<br><font face="Courier New"><font size=-2>0.5148700211658463 &lt; 0.5259820918180963</font></font>
+<br><font face="Courier New"><font size=-2>0.5144212268644456 &lt; 0.5255583736810165</font></font>
+<br><font face="Courier New"><font size=-2>0.5139790562597037 &lt; 0.5251408903155718</font></font>
+<br><font face="Courier New"><font size=-2>0.5135433894591137 &lt; 0.5247295292360962</font></font>
+<br><font face="Courier New"><font size=-2>0.5131141091845584 &lt; 0.5243241804031098</font></font>
+<br><font face="Courier New"><font size=-2>0.5126911007050697 &lt; 0.5239247361604926</font></font>
+<br><font face="Courier New"><font size=-2>0.5122742517715848 &lt; 0.5235310911745233</font></font>
+<br><font face="Courier New"><font size=-2>0.5118634525536317 &lt; 0.5231431423747244</font></font>
+<br><font face="Courier New"><font size=-2>0.5114585955778812 &lt; 0.522760788896448</font></font>
+<br><font face="Courier New"><font size=-2>0.5110595756685004 &lt; 0.5223839320251501</font></font>
+<br><font face="Courier New"><font size=-2>0.5106662898892504 &lt; 0.5220124751422904</font></font>
+<br><font face="Courier New"><font size=-2>0.5102786374872691 &lt; 0.5216463236728097</font></font>
+<br><font face="Courier New"><font size=-2>0.5098965198384828 &lt; 0.5212853850341278</font></font>
+<br><font face="Courier New"><font size=-2>0.5095198403945955 &lt; 0.5209295685866153</font></font>
+<br><font face="Courier New"><font size=-2>0.5091485046316004 &lt; 0.5205787855854894</font></font>
+<br><font face="Courier New"><font size=-2>0.5087824199997696 &lt; 0.5202329491340872</font></font>
+<br><font face="Courier New"><font size=-2>0.5084214958750664 &lt; 0.5198919741384719</font></font>
+<br><font face="Courier New"><font size=-2>0.5080656435119424 &lt; 0.5195557772633285</font></font>
+<br><font face="Courier New"><font size=-2>0.5077147759974683 &lt; 0.5192242768891088</font></font>
+<br><font face="Courier New"><font size=-2>0.5073688082067589 &lt; 0.5188973930703821</font></font>
+<br><font face="Courier New"><font size=-2>0.5070276567596506 &lt; 0.518575047495357</font></font>
+<br><font face="Courier New"><font size=-2>0.5066912399785899 &lt; 0.5182571634465345</font></font>
+<br><font face="Courier New"><font size=-2>0.5063594778476961 &lt; 0.5179436657624577</font></font>
+<br><font face="Courier New"><font size=-2>0.506032291972961 &lt; 0.5176344808005204
+//Die 200 Zyklen wurden durchlaufen.</font></font>
+<p><font face="Arial"><font size=-1>Die Codebook-Vektoren wurden folgenderma&szlig;en
+initialisiert:</font></font>
+<p><img SRC="2dima.gif" height=355 width=500>
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<p><font face="Arial"><font size=-1>Also wird Input-Vektor 3 falsch klassifiziert,
+weil er n&auml;her zu W<sub>2 </sub>als zu W<sub>1 </sub>ist. Nach den
+200 Zyklen sind die Codebook-Vektoren:</font></font>
+<p><font face="Courier New"><font size=-1>1. Codebook-Vector: (0.961448365116033,
+0.27498552910236457) Class: 1</font></font>
+<br><font face="Courier New"><font size=-1>2. Codebook-Vector: (0.27757270902240677,
+0.9607046326556162) Class: 2</font></font>
+<p><img SRC="2dimb.gif" height=374 width=500>
+<p><font face="Arial"><font size=-1>Die vier Input-Vektoren sind linear
+trennbar, also k&ouml;nnen alle Klassen richtig klassifiziert werden.</font></font>
+<br>&nbsp;
+<p><font face="Arial"><font size=-1>Beispiel2:</font></font>
+<p><font face="Arial"><font size=-1>Beispiel2.net:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font></font><font face="Courier New"><font size=-2>2</font></font>
+<dir>
+<dir>
+<dir>
+<dir><font face="Courier New"><font size=-2>2</font></font>
+<br><font face="Courier New"><font size=-2>random</font></font></dir>
+</dir>
+</dir>
+</dir>
+<font face="Arial"><font size=-1>Beispiel2.tre:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font></font><font face="Courier New"><font size=-2>2</font></font>
+<dir>
+<dir>
+<dir>
+<dir><font face="Courier New"><font size=-2>4</font></font>
+<br><font face="Courier New"><font size=-2>1,0,1</font></font>
+<br><font face="Courier New"><font size=-2>0,1,2</font></font>
+<br><font face="Courier New"><font size=-2>0.51,0.5,2</font></font>
+<br><font face="Courier New"><font size=-2>0.5,0.51,1</font></font></dir>
+</dir>
+</dir>
+</dir>
+<font face="Arial"><font size=-1>Die vier Input-Vektoren sind nicht linear
+trennbar, also k&ouml;nnen nicht alle Klassen richtig klassifiziert werden.</font></font>
+<p><font face="Arial"><font size=-1>Beispiel3:</font></font>
+<div align=right><font face="Arial"><font size=-1>Inhalt der Dateien</font></font></div>
+<font face="Arial"><font size=-1>Beispiel4.net:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font></font><font face="Courier New"><font size=-2>12</font></font>
+<dir>
+<dir>
+<dir>
+<dir><font face="Courier New"><font size=-2>3</font></font>
+<br><font face="Courier New"><font size=-2>random</font></font></dir>
+</dir>
+</dir>
+</dir>
+<font face="Arial"><font size=-1>Beispiel4.tre:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font></font><font face="Courier New"><font size=-2>12</font></font>
+<dir>
+<dir>
+<dir>
+<dir><font face="Courier New"><font size=-2>30</font></font>
+<br><font face="Courier New"><font size=-2>25,30,35,47,13,26,19,-22,5,41,16,35,3</font></font>
+<br><font face="Courier New"><font size=-2>28,30,45,55,27,12,29,6,16,43,8,44,2</font></font>
+<br><font face="Courier New"><font size=-2>31,25,39,49,14,26,14,26,6,48,10,40,1</font></font>
+<br><font face="Courier New"><font size=-2>32,28,38,48,29,-6,21,20,11,47,5,39,2</font></font>
+<br><font face="Courier New"><font size=-2>30,26,43,49,29,7,29,1,6,35,17,41,2</font></font>
+<br><font face="Courier New"><font size=-2>35,30,39,53,4,29,14,-26,19,35,14,39,3</font></font>
+<br><font face="Courier New"><font size=-2>28,31,44,52,11,27,19,22,13,43,8,46,1</font></font>
+<br><font face="Courier New"><font size=-2>25,31,43,50,13,26,18,-23,8,37,6,50,3</font></font>
+<br><font face="Courier New"><font size=-2>34,29,39,51,22,-19,26,-14,11,39,5,42,2</font></font>
+<br><font face="Courier New"><font size=-2>26,27,35,46,4,29,2,-29,14,48,18,45,3</font></font>
+<br><font face="Courier New"><font size=-2>30,34,41,55,3,29,11,-27,7,50,17,45,3</font></font>
+<br><font face="Courier New"><font size=-2>25,30,44,55,29,6,29,4,18,35,16,37,2</font></font>
+<br><font face="Courier New"><font size=-2>35,27,45,45,5,29,18,23,6,46,16,46,1</font></font>
+<br><font face="Courier New"><font size=-2>33,31,37,52,0,29,12,27,16,37,20,36,1</font></font>
+<br><font face="Courier New"><font size=-2>26,33,40,51,5,29,20,21,13,39,14,48,1</font></font>
+<br><font face="Courier New"><font size=-2>33,33,40,49,14,26,6,-29,6,40,9,43,3</font></font>
+<br><font face="Courier New"><font size=-2>28,26,40,47,1,29,3,29,7,40,11,49,1</font></font>
+<br><font face="Courier New"><font size=-2>34,34,36,52,19,22,10,28,13,37,11,37,1</font></font>
+<br><font face="Courier New"><font size=-2>26,34,40,48,27,-12,29,-1,18,38,17,45,2</font></font>
+<br><font face="Courier New"><font size=-2>33,35,44,52,5,29,1,29,16,48,8,38,1</font></font>
+<br><font face="Courier New"><font size=-2>29,34,45,46,7,28,7,29,8,35,17,50,1</font></font>
+<br><font face="Courier New"><font size=-2>25,32,43,50,5,29,17,-24,20,48,18,36,3</font></font>
+<br><font face="Courier New"><font size=-2>33,35,39,50,14,26,18,-23,13,41,5,48,3</font></font>
+<br><font face="Courier New"><font size=-2>34,32,40,49,4,29,1,-29,7,35,9,37,3</font></font>
+<br><font face="Courier New"><font size=-2>35,30,42,55,9,28,15,25,18,50,7,38,1</font></font>
+<br><font face="Courier New"><font size=-2>26,31,43,46,29,0,22,19,7,35,5,37,2</font></font>
+<br><font face="Courier New"><font size=-2>25,26,37,51,6,29,12,27,20,35,20,41,1</font></font>
+<br><font face="Courier New"><font size=-2>30,30,36,46,15,25,20,21,18,42,17,39,1</font></font>
+<br><font face="Courier New"><font size=-2>35,32,38,53,26,-14,26,-13,15,47,8,40,2</font></font>
+<br><font face="Courier New"><font size=-2>33,31,44,45,12,27,3,-29,13,37,10,50,3</font></font>
+<div align=right><font face="Humanst521 BT"><font size=-1>Programmausgabe:</font></font></div>
+</dir>
+</dir>
+<font face="Courier New"><font size=-2>Training: Cycles: 100</font></font>
+<dir>
+<dir><font face="Courier New"><font size=-2>Training: Learing Factor set:
+0.01</font></font>
+<br><font face="Courier New"><font size=-2>random-input: Net initialized</font></font>
+<br><font face="Courier New"><font size=-2>Training:</font></font>
+<br><font face="Courier New"><font size=-2>Learing Function: linear</font></font>
+<br><font face="Courier New"><font size=-2>Distance Function: euklid</font></font>
+<br><b><font face="Courier New"><font size=-2>Learing Factor: 0.001</font></font></b>
+<br><b><font face="Courier New"><font size=-2>Number of Cycles: 100</font></font></b>
+<br><font face="Courier New"><font size=-2>Codebook-Vectors normalized</font></font>
+<br><font face="Courier New"><font size=-2>euklid: Evaluated trees</font></font>
+<br><font face="Courier New"><font size=-2>1. Input-Vec: Class: 3 -> 3
+correct</font></font>
+<br><font face="Courier New"><font size=-2>2. Input-Vec: Class: 2 -> 2
+correct</font></font>
+<br><font face="Courier New"><font size=-2>3. Input-Vec: Class: 1 -> 1
+correct</font></font>
+<br><font face="Courier New"><font size=-2>4. Input-Vec: Class: 2 -> 2
+correct</font></font>
+<br><font face="Courier New"><font size=-2>5. Input-Vec: Class: 2 -> 2
+correct</font></font>
+<br><font face="Courier New"><font size=-2>6. Input-Vec: Class: 3 -> 3
+correct</font></font>
+<br><font face="Courier New"><font size=-2>7. Input-Vec: Class: 1 -> 1
+correct</font></font>
+<br><font face="Courier New"><font size=-2>8. Input-Vec: Class: 3 -> 3
+correct</font></font>
+<br><font face="Courier New"><font size=-2>9. Input-Vec: Class: 2 -> 2
+correct</font></font>
+<br><font face="Courier New"><font size=-2>10. Input-Vec: Class: 3 -> 3
+correct</font></font>
+<br><font face="Courier New"><font size=-2>11. Input-Vec: Class: 3 -> 3
+correct</font></font>
+<br><font face="Courier New"><font size=-2>12. Input-Vec: Class: 2 -> 2
+correct</font></font>
+<br><font face="Courier New"><font size=-2>13. Input-Vec: Class: 1 -> 1
+correct</font></font>
+<br><font face="Courier New"><font size=-2>14. Input-Vec: Class: 1 -> 1
+correct</font></font>
+<br><font face="Courier New"><font size=-2>15. Input-Vec: Class: 1 -> 1
+correct</font></font>
+<br><font face="Courier New"><font size=-2>16. Input-Vec: Class: 3 -> 3
+correct</font></font>
+<br><font face="Courier New"><font size=-2>17. Input-Vec: Class: 1 -> 1
+correct</font></font>
+<br><font face="Courier New"><font size=-2>18. Input-Vec: Class: 1 -> 1
+correct</font></font>
+<br><font face="Courier New"><font size=-2>19. Input-Vec: Class: 2 -> 2
+correct</font></font>
+<br><font face="Courier New"><font size=-2>20. Input-Vec: Class: 1 -> 1
+correct</font></font>
+<br><font face="Courier New"><font size=-2>21. Input-Vec: Class: 1 -> 1
+correct</font></font>
+<br><font face="Courier New"><font size=-2>22. Input-Vec: Class: 3 -> 3
+correct</font></font>
+<br><font face="Courier New"><font size=-2>23. Input-Vec: Class: 3 -> 3
+correct</font></font>
+<br><font face="Courier New"><font size=-2>24. Input-Vec: Class: 3 -> 3
+correct</font></font>
+<br><font face="Courier New"><font size=-2>25. Input-Vec: Class: 1 -> 1
+correct</font></font>
+<br><font face="Courier New"><font size=-2>26. Input-Vec: Class: 2 -> 2
+correct</font></font>
+<br><font face="Courier New"><font size=-2>27. Input-Vec: Class: 1 -> 1
+correct</font></font>
+<br><font face="Courier New"><font size=-2>28. Input-Vec: Class: 1 -> 1
+correct</font></font>
+<br><font face="Courier New"><font size=-2>29. Input-Vec: Class: 2 -> 2
+correct</font></font>
+<br><font face="Courier New"><font size=-2>30. Input-Vec: Class: 3 -> 3
+correct</font></font>
+<br><font face="Courier New"><font size=-2>30 of 30 are correct classified
+(100 %)</font></font></dir>
+</dir>
+<font face="Humanst521 BT"><font size=-1>Lade ich jetzt andere Polizisten,
+auf die das Netz also noch nicht trainiert wurde:</font></font>
+<p><font face="Humanst521 BT"><font size=-1>So werden</font></font>
+<p><font face="Courier New"><font size=-2>58 of 60 are correct classified
+(96 %)</font></font>
+<br><font face="Humanst521 BT"><font size=-1>fast alle Polizisten richtig
+klassifiziert.</font></font>
+<br>&nbsp;
+<br>&nbsp;</dir>
+</dir>
+<a NAME="_Toc466550861"></a><a NAME="_Toc466644867"></a><b><i><font face="Humanst521 BT">6.
+Interpretation der Ergebnisse</font></i></b>
+<ul>
+<li>
+<b><font face="Humanst521 BT"><font size=-1>Wenn man als Inputfunktion
+"random-input" w&auml;hlt, klassifiziert das Netz oft alle Muster richtig.</font></font></b></li>
+</ul>
+
+<ul>
+<li>
+<b><font face="Humanst521 BT"><font size=-1>Bei "random" besteht die Gefahr
+eine zu gro&szlig;e Lernrate zu w&auml;hlen, so da&szlig; ein Codebook-Vektor
+deutlich von den Input-Vektoren weggeschoben wird. Dieser Klassenvektor
+<i>verhungert</i>
+dann quasi, d.h. egal wieviele Zyklen oder wie hoch ich die Lernrate w&auml;hle,
+das Netz ist nicht mehr in der Lage, diesen Vektor zu korrigieren, weil
+die Lernfunktion nicht diesen Vektor, sondern den Vektor mit der geringsten
+Distanz zum Eingabe-Vektor ver&auml;ndert.. Man erkennt dies Problem daran,
+da&szlig; kein Muster dieser Klasse zugeordnet wird. In diesem Beispiel
+ist die Klasse 2 nicht vertreten.</font></font></b></li>
+</ul>
+
+<dir>
+<dir><b><font face="Courier New"><font size=-2>1. Input-Vec: Class: 3 ->
+3 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>2. Input-Vec: Class: 2 ->
+1</font></font></b>
+<br><b><font face="Courier New"><font size=-2>3. Input-Vec: Class: 1 ->
+1 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>4. Input-Vec: Class: 2 ->
+1</font></font></b>
+<br><b><font face="Courier New"><font size=-2>5. Input-Vec: Class: 2 ->
+1</font></font></b>
+<br><b><font face="Courier New"><font size=-2>6. Input-Vec: Class: 3 ->
+3 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>7. Input-Vec: Class: 1 ->
+1 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>8. Input-Vec: Class: 3 ->
+3 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>9. Input-Vec: Class: 2 ->
+3</font></font></b>
+<br><b><font face="Courier New"><font size=-2>10. Input-Vec: Class: 3 ->
+3 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>11. Input-Vec: Class: 3 ->
+3 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>12. Input-Vec: Class: 2 ->
+1</font></font></b>
+<br><b><font face="Courier New"><font size=-2>13. Input-Vec: Class: 1 ->
+1 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>14. Input-Vec: Class: 1 ->
+1 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>15. Input-Vec: Class: 1 ->
+1 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>16. Input-Vec: Class: 3 ->
+3 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>17. Input-Vec: Class: 1 ->
+1 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>18. Input-Vec: Class: 1 ->
+1 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>19. Input-Vec: Class: 2 ->
+1</font></font></b>
+<br><b><font face="Courier New"><font size=-2>20. Input-Vec: Class: 1 ->
+1 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>21. Input-Vec: Class: 1 ->
+1 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>22. Input-Vec: Class: 3 ->
+3 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>23. Input-Vec: Class: 3 ->
+3 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>24. Input-Vec: Class: 3 ->
+3 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>25. Input-Vec: Class: 1 ->
+1 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>26. Input-Vec: Class: 2 ->
+1</font></font></b>
+<br><b><font face="Courier New"><font size=-2>27. Input-Vec: Class: 1 ->
+1 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>28. Input-Vec: Class: 1 ->
+1 correct</font></font></b>
+<br><b><font face="Courier New"><font size=-2>29. Input-Vec: Class: 2 ->
+3</font></font></b>
+<br><b><font face="Courier New"><font size=-2>30. Input-Vec: Class: 3 ->
+3 correct</font></font></b>
+<p><b><font face="Humanst521 BT"><font size=-1>und dieser Codebook-Vektor
+fast nur negative Werte annimmt:</font></font></b></dir>
+</dir>
+
+<dir>
+<dir><b><font face="Courier New"><font size=-2>1. Codebook-Vec: (0.28096840079972224,
+0.260074757144589, 0.3409701346050022, 0.4373355739553175, -0.024340290239564983,
+0.3805130327502203, 0.04401440669953064, 0.29629848362943306, 0.12256830742972609,
+0.3714993405716276, 0.1374015716825596, 0.37265026815600183) Class: 1</font></font></b>
+<p><b><font face="Courier New"><font size=-2>2. Codebook-Vec: (-0.0587144511264643,
+-0.03739472879165023, -0.043038097542174, -0.1819505134351621, 0.37057988756821403,
+-0.7596366688171149, 0.26937454375593206, 0.003814494042416983, -0.2079803726326521,
+-0.15919488972514723, -0.2493209680511035, -0.2061108197379289) Class:
+2</font></font></b>
+<p><b><font face="Courier New"><font size=-2>3. Codebook-Vec: (0.250001541308733,
+0.28180227465814317, 0.3443105345797227, 0.4077919617945909, -0.017332796162093413,
+0.42217062318227466, -8.370242573511355E-4, -0.3236656173784325, 0.08915888319921528,
+0.3526916059573079, 0.1073121299407057, 0.3822270490584565) Class: 3</font></font></b>
+<br>&nbsp;</dir>
+<b><font face="Humanst521 BT"><font size=-1>Um dieses zu vermeiden sollte
+man das Training mit einer geringen Lernrate beginnen und immerwieder neu
+initialisiern.</font></font></b></dir>
+<a NAME="_Toc466644868"></a><b><i><font face="Humanst521 BT">7. verbessertes
+LVQ</font></i></b>
+<dir>
+<dir><b><font face="Humanst521 BT"><font size=-1>Um das "Verhungern" eines
+Codebook-Vektors zu verhindern. Habe ich die Lernfunktion so ver&auml;ndert,
+da&szlig; der "echte" Klassen-Vektor eines Input-Vektors immer in Richtung
+des Input-Vektors verschoben wird. Ich daf&uuml;r im else-Zweig der learn-Methode
+folgendes erg&auml;nzt:</font></font></b>
+<p><b><font face="Courier New"><font size=-2>for(int m=1;m&lt;net.getInputDimension()+1;m++)
+{</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//Schleife-Komponenten</font></font></b></dir>
+<b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if(("linear".compareTo(getTrainingFunc(training)))==0) {</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+newValue = net.getCodebookVec(iReal,m)+ factor * Math.sqrt(1.0/step) *</font></font></b></dir>
+<b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(trees.getInputVec(m,iInput,trees)</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++net.getCodebookVec(iReal,m));</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+net.setCodebookVec(iReal,m,newValue);</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if(("log".compareTo(getTrainingFunc(training)))==0) {</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+newValue = net.getCodebookVec(iReal,m)+ factor *</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+1.0/Math.log(step+Math.E) *</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+trees.getInputVec(m,iInput,trees)</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++net.getCodebookVec(iReal,m));</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+net.setCodebookVec(iReal,m,newValue);</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font></b>
+<br><b><font face="Courier New"><font size=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</font></font></b>
+<p><a NAME="_Toc466644869"></a><b><i><font face="Humanst521 BT">8. Ausblick</font></i></b>
+<ul>
+<li>
+<b><font face="Humanst521 BT"><font size=-1>Relativ problemlos k&ouml;nnte
+ein Pruning Algorithmus eingef&uuml;gt werden.</font></font></b></li>
+</ul>
+<a NAME="_Toc466644870"></a><b><i><font face="Humanst521 BT">9. Bugs</font></i></b>
+<ul>
+<li>
+<font face="Humanst521 BT"><font size=-1>Bei mehr als 25000 Zeichen im
+Output-Fenster steht das Programm scheinbar. Wenn mit "Search/Clear" kann
+das Problem gel&ouml;st werden.</font></font></li>
+</ul>
+<a NAME="_Toc466550862"></a><a NAME="_Toc466644871"></a><b><i><font face="Humanst521 BT">10.
+Literatur</font></i></b>
+<ul>
+<li>
+<font face="Humanst521 BT"><font size=-1>Zell, Andreas, Simulation neuronaler
+Netze, Oldenbourg Verlag M&uuml;nchen Wien, 1994.</font></font></li>
+
+<li>
+<font face="Humanst521 BT"><font size=-1>Snns, Stuttgart Neural Network
+Simulator, User Manual, Version 4.1, University of Stuttgart, Report No.
+6/95</font></font></li>
+</ul>
+<a NAME="_download"></a><a NAME="_Toc466644853"></a><b><i><font face="Humanst521 BT">11.
+Download</font></i></b><BR>
+<DIR>
+<font face="Humanst521 BT"><font size=-1>Jeder kann hier das <A HREF="policeman.zip">
+ausf&uuml;hrbare Programme</A> erhalten. Wer die Quelle m&ouml;chte, 
+<a href="../../contact.php">schreibe mir bitte</a>, weil ich gerne wissen möchte, wer an solcher Software interessiert ist.
+solcher Software ist.</FONT></FONT></DIR><BR>
+
+</blockquote>
+
+<p><br>
+<hr SIZE="1" align=left WIDTH="99%">
+<table ALIGN=LEFT WIDTH="92%">
+<tr>
+<td>
+<h5><a href="../../contact.php">e-mail me</a></h5>
+
+<h5>
+Last update:&nbsp;<script><!--
+		document.write(document.lastModified)
+	//--></script>
+</h5>
+</td>
+
+<td ALIGN=RIGHT COLSPAN="2"><a href="../../index.php" TARGET="_parent" onMouseOver="zeigen(
+								'Hinweistext', 
+								'Back home', -120,-45,this)" onMouseOut="verstecken('Hinweistext')"><img SRC="Home.gif" BORDER=0 VALIGN="CENTER" height=38 width=38></a><a href="index.html" TARGET="_parent" onMouseOver="zeigen(
+								'Hinweistext', 
+								'Back home', -120,-45,this)" onMouseOut="verstecken('Hinweistext')"><img SRC="RightArrow.gif" HSPACE=3 VSPACE=11 BORDER=0 valign="CENTER" height=20 width=15></a></td>
+</tr>
+</table>
+</blockquote>
+
+<!-- counter-code-begin -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-11922467-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- counter-code-end -->
+
+</body>
+</html>

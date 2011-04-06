@@ -1,0 +1,20 @@
+HTML, BODY, BODY.Navigator, BODY.HTML, H1, H2, H3, H4, H5, H6, P, OL, UL, DL, TD, TH, LI, DD, DT, CAPTION {font-family: Arial, Helvetica; color: #E49119;}
+TT, CODE, SAMP, PRE {font-family: "Arial,Helvetica,Sans-serif,System", monospace; color: #E49119;}
+BODY {color: snow; background-color: black; margin-right: 20;}
+A:link {color: GAINSBORO;}
+A:active {color: #E49119;}
+A:visited {color: DARKGRAY;}
+A:hover {color: WHITE;}
+H1 {font-size: 1.5em;}
+H2 {font-size: 1.3em;}
+H3 {font-size: 1.2em; color: LIGHTGREY;}
+H4 {font-size: 0.9em; color: LIGHTGREY;}
+H5 {font-size: 0.8em;}
+H6 {font-size: 0.6em;}
+LI {color: #E49119;}
+DT {margin: 2;}
+#Hinweistext
+{	position: absolute;	visibility: hide;	}
+P.Status
+{	color: WHITE; background-color: GRAY; border: WHITE; padding: 7; width: 250;	}
+TD.TEXT { font-size: 10pt; font-family: Arial,Helvetica,Sans-serif,System; color: #E49119; }

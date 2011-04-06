@@ -1,0 +1,1 @@
+<%-- Ausgabe aller Attribute des PageContexts. --%><%@ page import="java.util.*" %><HTML><BODY><H4>Ausgabe aller Attribute des PageContext's</H4><%	Enumeration e = pageContext.getAttributeNamesInScope(1);  	  	while(e.hasMoreElements()) {    	    	out.println("\t<li>" + e.nextElement() + "</li>");    	  	}%></BODY></HTML>

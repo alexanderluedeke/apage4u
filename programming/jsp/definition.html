@@ -1,0 +1,118 @@
+<HTML>
+<HEAD>
+<TITLE>apage4u - tag library - Definition</TITLE>
+<META NAME="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="Layout.css">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+<P>jsp &amp; tag library.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="motivation.html">prev</A>&nbsp;&nbsp;<A HREF="tag.html">next</A></P>
+<HR SIZE="1">
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100% HEIGHT=70%>
+  <TR> 
+    <TD VALIGN=CENTER><!-- Begin text --> <!-- Begin head --> 
+      <TABLE WIDTH="92%" BORDER="0" CELLSPACING="0" CELLPADDING="0">
+        <TR> 
+          <TD WIDTH="6%" HEIGHT="10" BGCOLOR="#B2C9D8" VALIGN=BOTTOM ALIGN=CENTER> 
+            <H1><FONT SIZE="7" COLOR=WHITE>4</FONT></H1>
+          </TD>
+          <TD WIDTH="94%" VALIGN=BOTTOM BGCOLOR="#F8FAFC"> 
+            <H1>&nbsp;die tag library</H1>
+          </TD>
+        </TR>
+      </TABLE>
+      <!-- End head --> 
+      <H2>4.1 Voraussetzung</H2>
+      <P>Der Web-Server implementiert das Tag Interface (z.B. TomCat)</P>
+      <H2>4.2 Dateien anlegen und editieren</H2>
+      <P>Alle folgenden Dateien geh&ouml;ren in ein Verzeichnis das z.B. den Projektnamen 
+        tr&auml;gt (in <I>webapps</I>)</P>
+      <UL>
+        <LI>ein Verzeichnis <I>WEB-INF anlegen</I></LI>
+        <LI>die Datei <I>WEB-INF/taglib.tld</I></LI>
+        <LI>und <I>WEB-INF/web.xml einf&uuml;gen</I></LI>
+        <LI>ein Verzeichnis <I>WEB-INF/classes anlegen</I></LI>
+      </UL>
+      <H3>4.2.1<I> taglib.tld</I></H3>
+      <P>Der <I>taglib descriptor </I>legt einige Eigenschaften der library fest. 
+      </P>
+      <PRE>&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; ?&gt;
+&lt;!DOCTYPE taglib
+        PUBLIC &quot;-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN&quot;
+	&quot;http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd&quot;&gt;
+
+&lt;taglib&gt;
+  &lt;tlibversion&gt;1.0&lt;/tlibversion&gt;
+  &lt;jspversion&gt;1.1&lt;/jspversion&gt;
+  &lt;shortname&gt;mt&lt;/shortname&gt;
+  &lt;uri&gt;/tagdoc/&lt;/uri&gt;
+  &lt;info&gt;
+	A tag library for Musitech
+  &lt;/info&gt;
+</PRE>
+      <P>F&uuml;r jeden eigenen tag muss ein <FONT FACE="Courier New, Courier, mono">&lt;tag&gt;...&lt;/tag&gt;</FONT> 
+        angelegt werden. <BR>
+      </P>
+      <PRE>
+	&lt;tag&gt; 
+            &lt;name&gt;LookUp&lt;/name&gt;
+            &lt;tagclass&gt;mttags.LookUpTag&lt;/tagclass&gt;
+            &lt;bodycontent&gt;empty&lt;/bodycontent&gt;
+            &lt;info&gt;
+                Gets a Music object from the server by its JNDI name.
+            &lt;/info&gt;
+            &lt;attribute&gt; 
+                &lt;name&gt;jndiName&lt;/name&gt;
+                &lt;required&gt;true&lt;/required&gt;
+                &lt;rtexprvalue&gt;true&lt;/rtexprvalue&gt; 
+            &lt;/attribute&gt; 
+	&lt;/tag&gt; 
+&lt;/taglib&gt;</PRE>
+      <H3>4.2.2<I> </I>Verwendung in einer <I>jsp</I></H3>
+      <PRE CLASS=HL>&lt;%-- Einbinden der taglib fuer Musitech --%&gt;
+    &lt;%@ taglib uri=&quot;WEB-INF/taglib.tld&quot; prefix=&quot;mt&quot; %&gt;
+
+...
+
+&lt;%-- Add the Music object to the PageContext --%&gt;
+    &lt;mt:LookUp jndiName='bach' /&gt;
+</PRE>
+      <H3>4.2.3 <I>web.xml</I></H3>
+      <PRE>&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+&lt;!DOCTYPE web-app
+    PUBLIC &quot;-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN&quot;
+    &quot;http://java.sun.com/j2ee/dtds/web-app_2_2.dtd&quot;&gt;
+
+&lt;web-app&gt;
+	&lt;taglib&gt;
+	    &lt;taglib-uri&gt;
+               <FONT COLOR="#990000">taglib.tld
+</FONT>	    &lt;/taglib-uri&gt;
+	    &lt;taglib-location&gt;
+               <FONT COLOR="#990000">/WEB-INF/
+</FONT>	    &lt;/taglib-location&gt;
+	&lt;/taglib&gt;
+&lt;/web-app&gt;</PRE>
+      <P>Jetzt kann die java Klasse <I>mttags.LookUpTag</I> geschrieben werden.</P>
+    </TD>
+  </TR>
+</TABLE>
+<HR SIZE="1">
+<P>jsp &amp; tag library.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="motivation.html">prev</A>&nbsp;&nbsp;<A HREF="tag.html">next</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ 
+  back to&nbsp;<A HREF="../../index.html"> a P a g e </A>]</P>
+  
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-11922467-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>  
+  
+</BODY>
+</HTML>

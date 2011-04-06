@@ -1,0 +1,42 @@
+<%-- Beispiel session --%>
+<HTML><BODY>
+
+<TABLE border="1" cellspacing="0" cellpadding="0">
+<TR><TD align=left valign=top width="300">
+	Session id
+</TD><TD>
+	<%= session.getId() %>
+</TD></TR><TR><TD>
+	This session was created at
+</TD><TD>
+	<%= session.getCreationTime() %>
+</TD></TR><TR><TD>
+	The current time is
+</TD><TD>
+	<%= System.currentTimeMillis()/1000 %>
+</TD></TR><TR><TD>
+	MaxInactiveInterval (sec.)
+</TD><TD>
+	<%= session.getMaxInactiveInterval() %>
+	<% session.setMaxInactiveInterval(3); %>
+</TD></TR><TR><TD>
+	MaxInactiveInterval
+</TD><TD>
+	<%= session.getMaxInactiveInterval() %>
+</TD></TR><TR><TD>
+	Session value for the key "My dog"
+</TD><TD>
+	<%= session.getValue("My dog") %>
+	<% session.putValue("My dog", new String("Ralph")); %>
+</TD></TR><TR><TD>
+	My dog's name is
+</TD><TD>
+	<%= session.getValue("My dog") %>
+</TD></TR>
+</TABLE>
+
+<FORM TYPE=POST ACTION=Session2.jsp>
+	<INPUT TYPE=submit name=submit Value="Submit">
+</FORM>
+
+</BODY></HTML>

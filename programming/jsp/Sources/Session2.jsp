@@ -1,0 +1,1 @@
+<%-- Beispiel 2 session --%><HTML><BODY><TABLE border="1" cellspacing="0" cellpadding="0"><TR><TD align=left valign=top width="300">	Session id</TD><TD>	<%= session.getId() %></TD></TR><TR><TD>	My dog's name is</TD><TD>	<%= session.getValue("My dog") %></TD></TR></TABLE><% session.invalidate(); %></BODY></HTML>

@@ -1,0 +1,73 @@
+<HTML>
+<HEAD>
+<TITLE>apage4u java sound - Service Provider Interfaces</TITLE>
+<META name="Content-Type" content="text/html; charset=iso-8859-1">
+<LINK REL="STYLESHEET" type="text/css" href="Layout.css">
+</HEAD>
+<BODY bgcolor="#FFFFFF">
+
+<P><I><A href="javaSoundClasses.html">Java Sound</A></I>.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="midi.html">prev</A>&nbsp;&nbsp;<A HREF="toc.html">next</A></P>
+<HR size="1">
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=101% HEIGHT=70%>
+  <TR> 
+    <TD VALIGN=CENTER><!-- Begin text --> 
+      <H2>3.1. Die Service Provider Interfaces</H2>
+      <P>an dieser Stelle k&ouml;nnen z.B. </P>
+      <UL>
+        <LI>audio mixer</LI>
+        <LI>midi Synthesizer </LI>
+        <LI>file parser, die neue audio oder midi Dateiformate lesen und schreiben 
+          k&ouml;nnen.</LI>
+        <LI>converter, die von einem Datenformaten in ein anderes konvertieren 
+          k&ouml;nnen. </LI>
+      </UL>
+      <P>in Java Sound eingebunden werden.</P>
+      <H3>&nbsp;</H3>
+      <H3>3.2. javax.sound.sampled.spi package </H3>
+      <P>Vier abstrakte classes repr&auml;sentieren verschiedene Typen von Services:</P>
+      <OL>
+        <LI><FONT face="Courier New, Courier, mono">AudioFileWriter</FONT></LI>
+        <LI><FONT face="Courier New, Courier, mono">AudioFileReader</FONT></LI>
+        <LI><FONT face="Courier New, Courier, mono">FormatConversionProvider</FONT></LI>
+        <LI><FONT face="Courier New, Courier, mono">MixerProvider</FONT></LI>
+      </OL>
+      <P><FONT size="-1">Beispiel: <B>Tritonus</B>. Diese Gruppe hat sehr viel 
+        f&uuml;r Java Sound programmiert. Z.B. eine Implementation des Audio FormatConversionProviderInterface's 
+        f&uuml;r Windows, so dass jetzt auch mp3-encoding/decoding m&ouml;glich 
+        ist, also einen speziellen AudioFileReader und -Writer.</FONT></P>
+      <H3>&nbsp;</H3>
+      <H3>3.3. javax.sound.midi.spi package</H3>
+      <P>Vier abstrakte classes repr&auml;sentieren verschiedene Typen von Services:</P>
+      <OL>
+        <LI> <FONT face="Courier New, Courier, mono">MidiFileWriter</FONT></LI>
+        <LI><FONT face="Courier New, Courier, mono">MidiFileReader</FONT></LI>
+        <LI><FONT face="Courier New, Courier, mono">MidiDeviceProvider</FONT></LI>
+        <LI><FONT face="Courier New, Courier, mono">SoundbankReader</FONT></LI>
+      </OL>
+      <P><FONT size="-1">Beispiel: <B>WireProvider</B>. Eine Implementation des 
+        MIDI ServiceProviderInterface's f&uuml;r Windows; genauer gesagt, des 
+        MIDI DeviceProviders. Besteht aus einem java Package WireProvider.jar 
+        und einer Dynamic Link Library WireNative.dll, f&uuml;r den Windows speziefischen 
+        code, die mit <FONT face="Courier New, Courier, mono">System.loadLibrary("WireNative") 
+        </FONT>von WireProvider geladen werden kann.</FONT></P>
+    </TD>
+  </TR>
+</TABLE>
+<HR size="1">
+<P><I><A href="javaSoundClasses.html">Java Sound</A></I>.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="midi.html">prev</A>&nbsp;&nbsp;<A HREF="toc.html">next</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ back to&nbsp;<A HREF="../../index.html"> a p a g e 4 u </A>]</P>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-11922467-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</BODY></HTML>

@@ -1,0 +1,72 @@
+<HTML>
+<HEAD>
+<TITLE>tag library - Nested tags</TITLE>
+<META NAME="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="Layout.css">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+<P>jsp &amp; tag library.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="pageContext.html">prev</A>&nbsp;&nbsp;<A HREF="toc.html">next</A></P>
+<HR SIZE="1">
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100% HEIGHT=70%>
+  <TR> 
+    <TD VALIGN=CENTER><!-- Begin text --> <!-- Begin head --> 
+      <TABLE WIDTH="92%" BORDER="0" CELLSPACING="0" CELLPADDING="0">
+        <TR> 
+          <TD WIDTH="6%" HEIGHT="10" BGCOLOR="#B2C9D8" VALIGN=BOTTOM ALIGN=CENTER> 
+            <H1><FONT SIZE="7" COLOR=WHITE>7</FONT></H1>
+          </TD>
+          <TD WIDTH="94%" VALIGN=BOTTOM BGCOLOR="#F8FAFC"> 
+            <H1>&nbsp;nested tags</H1>
+          </TD>
+        </TR>
+      </TABLE>
+      <!-- End head --> 
+      <H2>7.1 Kommunikation zwischen tags</H2>
+      <PRE CLASS=HL>&lt;mt:<FONT COLOR="#990000">switch</FONT> value=&quot;dark&quot;&gt;
+    &lt;mt:<FONT COLOR="#990000">case</FONT> value=&quot;light&quot;&gt;
+       &lt;P&gt;This is light.&lt;/P&gt;
+    &lt;/mt:case&gt;
+    &lt;mt:case value=&quot;Dark&quot;&gt;
+       &lt;P&gt;This is Dark.&lt;/P&gt;
+    &lt;/mt:case&gt;
+    &lt;mt:case value=&quot;dark&quot;&gt;
+       &lt;P&gt;This is dark.&lt;/P&gt;
+    &lt;/mt:case&gt;
+&lt;/mt:switch&gt;</PRE>
+      <P>Bei verschachtelten tags kann der innere (<FONT FACE="Courier New, Courier, mono">case</FONT>) 
+        auf Werte des &auml;u&szlig;eren zugreifen durch z.B.</P>
+      <PRE>public int doStartTag() throws JspTagException {
+    // Get the outer tag
+    SwitchTag parent = 
+         (SwitchTag) <FONT COLOR="#990000">findAncestorWithClass(this,SwitchTag.class)</FONT>;
+    
+    if(parent==null) { 
+        throw new JspTagException(&quot;Case Tag without Switch Tag&quot;);
+    }
+
+    try {
+        if(parent.<FONT COLOR="#990000">getValue</FONT>(&quot;value&quot;).equals(getValue(&quot;value&quot;)))
+        ...</PRE>
+    </TD>
+  </TR>
+</TABLE>
+<HR SIZE="1">
+<P>jsp &amp; tag library.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="pageContext.html">prev</A>&nbsp;&nbsp;<A HREF="toc.html">next</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ 
+  back to&nbsp;<A HREF="../../index.html"> a P a g e </A>]</P>
+  
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-11922467-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>  
+  
+</BODY>
+</HTML>

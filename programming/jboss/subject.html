@@ -1,0 +1,69 @@
+<HTML>
+<HEAD>
+<TITLE>apage4u - database - Gegenstand dieses Projektes</TITLE>
+<META name="Content-Type" content="text/html; charset=iso-8859-1">
+<LINK REL="STYLESHEET" type="text/css" href="Layout.css">
+</HEAD>
+<BODY bgcolor="#FFFFFF">
+<P>database .&nbsp;&nbsp;<A HREF="toc.html">Inhalt</A>&nbsp;&nbsp;<A HREF="toc.html">zur&uuml;ck</A>&nbsp;&nbsp;<A HREF="function.html">weiter</A></P>
+<HR size="1">
+
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100% HEIGHT=70%>
+  <TR> 
+    <TD VALIGN=CENTER><!-- Begin text --> 
+		<TABLE border="0" cellpadding="0" cellspacing="0">
+			<TR><TD valign="bottom" align="left"><IMG src="images/ProgIcon.gif" vspace="3" width="423" height="87" border="0" alt="database"></TD></TR>
+		</TABLE>
+      <H3>1.&nbsp; Der Gegenstand dieses Projektes</H3>
+      
+<P class="text">
+Die Idee des <I>database</I>-Projektes bestand darin, beispielhaft den <B>JBoss 3</B> als J2EE-Plattform zu verwenden, d.h. als Datenbank- und Applikationsserver einer Internet-Anwendung. 
+</P><P class="text">
+Der JBoss ist seit mehreren Jahren auf dem Mark und befindet sich im Moment in der Version 3.x. Diese Version des JBoss implementiert die J2EE v 1.3 Spezifikation, so dass er damit seiner kommerziellen Konkurrenz zum Teil weit voraus ist. Das aktuelle Release dieses Open Source-Projektes kann kostenlos unter <A href=http://www.jboss.org/downloads.jsp target="_jboss_org">www.jboss.org</A> heruntergeladen werden. Die Distribution ist in zwei Varianten erh&auml;ltlich. JBoss kann sowohl mit der Servlet Engine der <I>Apache Software Fundation</I> (ASF), dem <I>Tomcat</I> zusammenarbeiten, als auch mit der ab Version 3 erh&auml;ltlichen JBoss eigenen Servlet Engine <I>JBossWeb</I>. Da diese Engine jedoch noch recht neu ist, wurde auf ein Beta Test verzichtet und es wurde die Version mit integrierten Tomcat 4.1.12 verwendet. 
+</P>
+
+<H4>Hintergrund - die J2EE-Plattform</H4>
+
+<P class="text">
+Der Kern des J2EE-Modells besteht darin, einfach anpassbare und leicht zu administrierende Komponenten unabh&auml;ngig von Systemdiensten wie Transaktionsverwaltung, Persistenz oder Autorisierung zu entwickeln, die plattform&uuml;bergreifend eingesetzt und an existierende Informationssysteme angekoppelt werden k&ouml;nnen. Die Konfiguration und Anpassung der
+Komponenten basiert auf Beschreibungen in Form von XML-Dokumenten (<I>Deployment-Deskriptoren</I>).
+Das J2EE-Modell ist Web-basiert, d.h. es wird die Annahme gemacht, dass Clients die Middleware in der Regel &uuml;ber HTTP ansprechen und dabei die Auszeichnungssprachen HTML und XML verwenden, allerdings ist der Zugriff &uuml;ber RMI, IIOP und SOAP ebenfalls vorgesehen. Das J2EE-Programmiermodell definiert die Rolle einer Middleware wie folgt: 
+<I>The principle role of the middle tier is therefore one of integrating the Web computing tier and the distributed computing tier, such that EIS resources are accessible efficiently, securely, and with a rich abstraction model.</I>
+</P><P class="text">
+<IMG src="images/Tier.jpg" width="448" height="340" vspace="6" hspace="0" border="0" alt="The three tiers"><BR><BR>
+Die J2EE-Technologie kann als konsequente Weiterentwicklung dreier erfolgreicher Java-APIs angesehen werden: JDBC, Servlets und Enterprise Java Beans. Die wichtigsten Konzepte der J2EE-Plattform sind Komponenten und Container. Eine Komponente ist eine abgeschlossene Einheit des Anwendungsprogramms. Die Laufzeitumgebung f&uuml;r J2EE-Komponenten wird durch Container umgesetzt. Sie stellen eine einheitliche Sicht auf die von tiefer liegenden Schichten angebotenen Dienste zur Verf&uuml;gung. Eine Komponente kann unabh&auml;ngig von der verwendeten J2EE-Plattform die gleichen Dienste erwarten. Hierzu z&auml;hlt beispielsweise ein Namensdienst (JNDI) und ein Persistenzdienst (CMP bzw. BMP). Die Nahtstelle zwischen Komponenten und Containern wird durch Interfaces beschrieben. Komponenten m&uuml;ssen die darin vereinbarten Methoden implementieren. Der Lebenszyklus einer Komponente legt die Reihenfolge der Aufrufe dieser Methoden durch Container fest. Das J2EE-Programmiermodell definiert unter anderem zwei verschiedene Arten von Komponenten: Web-Komponenten und Enterprise-Java-Beans-Komponenten.
+</P><P class="text">
+Servlets und JSP-Seiten sind die wichtigsten Beispiele f&uuml;r <B>Web-Komponenten</B>. Sie werden durch Web-Container ausgef&uuml;hrt. Obwohl mit beiden Arten von Komponenten die gleiche Funktionalit&auml;t umgesetzt werden kann, werden sie trotzdem f&uuml;r unterschiedliche Zwecke eingesetzt. Servlets nehmen Anfragen entgegen und delegieren nach einer Analyse der Anfragedaten die Anfrage zur Bearbeitung an eine andere Komponente. <I>Servlets</I> haben in diesem Szenario eine Vermittlerrolle. <I>JSP-Seiten</I> sind ausschließlich f&uuml;r die Pr&auml;sentation der Anfrageergebnisse zust&auml;ndig. Sie implementieren weder die Vermittlungs- noch die eigentliche Anwendungslogik. Im Allgemeinen erzeugen sie HTML-Dokumente, sie k&ouml;nnen aber auch XML-Dokumente erstellen, welche von anderen Anwendungen weiterverarbeitet werden.
+</P><P class="text">
+<B>EJB-Komponenten</B>, d.h. Enterprise Java Beans, enthalten prim&auml;r die eigentliche Anwendungslogik. EJB-Container bieten eine Transaktionsverwaltung und einen Persistenzdienst an. Wie auch f&uuml;r Web-Komponenten &uuml;bernehmen Container die Verwaltung, Konfiguration und Ausf&uuml;hrung von Enterprise Java Beans. Clients kommunizieren prim&auml;r mit Containern. Sie nehmen Anfragen entgegen, leiten diese an die zugeh&ouml;rige Komponente weiter und schicken
+die generierte Antwort an den anfragenden Client zur&uuml;ck. Alle Container sind daf&uuml;r verantwortlich, die in der Konfigurationsdatei enthaltenen Angaben umzusetzen, beispielsweise die Authentifizierung von Benutzern. Enterprise Java Beans bilden die Grundlage f&uuml;r die Verteilung von J2EE-Anwendungen, die Dienste von EJB-Containern verdecken dabei einen großen Teil der Komplexit&auml;t verteilter Systeme.
+</P><P class="text">
+Das J2EE-Programmiermodell st&uuml;tzt sich auf eine <B>Drei-Schichten-Architektur</B>. Die Container sind dabei auf der mittleren Schicht angesiedelt. Die Ankopplung existierender Informationssysteme, in der J2EE-Terminologie Enterprise Information Systems (EIS) genannt, erfolgt mittels der Java Connector Architecture (JCA).  Die Connector-Architecture verallgemeinert das Konzept der JDBC-Treiber zu Ressourcenadaptern. Das Zusammenspiel zwischen J2EE-Server, Ressourcenadapter und EIS wird durch so genannte Kontrakte festgelegt. Sie regeln die Zusammenarbeit bez&uuml;glich Transaktionen, Sicherheit und Connection-Pooling. Anwender k&ouml;nnen sich bei der Entwicklung auf die Gesch&auml;ftslogik und Pr&auml;sentationsaspekte konzentrieren und m&uuml;ssen sich nicht mit der Implementierungen dieser Systemdienste auseinander setzen.
+</P><P class="text">
+<IMG src="images/DreiSchichten.jpg" width="415" height="206" vspace="6" hspace="0" border="0" alt="Dreischichten-Modell"><BR><BR>
+Bei der reinen Drei-Schichten-Anwendungen enthalten Web-Komponenten fast ausschließlich die Pr&auml;sentationslogik. Anwender greifen &uuml;ber einen Web-Browser und HTTP auf die Anwendung zu. EJB-Komponenten empfangen Anfragen nur von Web-Komponenten und greifen zu deren Beantwortung auf die unterste Schicht zu. Dieses Szenario trennt die Anwendungslogik sehr scharf von der Pr&auml;sentationslogik und erlaubt so eine relativ unabh&auml;ngige Entwicklung der beiden Bereiche und genau dies ist auch in der database-Anwendung zu beobachten.
+</P>
+  
+    </TD>
+  </TR>
+</TABLE>
+
+<BR><HR size="1">
+<P>database .&nbsp;&nbsp;<A HREF="toc.html">Inhalt</A>&nbsp;&nbsp;<A HREF="toc.html">zur&uuml;ck</A>&nbsp;&nbsp;<A HREF="function.html">weiter</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<A HREF="../../index.html" class="light">&nbsp;apage4u&nbsp;</A>home ]</P>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-11922467-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</BODY>
+</HTML>

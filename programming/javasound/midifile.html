@@ -1,0 +1,1454 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>apage4u java sound - Standard MIDI Files</TITLE>
+<META name="Content-Type" content="text/html; charset=iso-8859-1">
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<META content="The Standard MIDI File format" name=description>
+<META content="Standard MIDI File format, MIDI, file format, specification, standard, spec, programming, file, format, technical, sysex, events, tracks" name=keywords>
+<LINK REL="STYLESHEET" type="text/css" href="Layout.css">
+</HEAD>
+<BODY>
+
+<P><I><A href="javaSoundClasses.html">Java Sound</A></I>.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A></P>
+<HR size="1">
+
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR>
+    <TD width=24><IMG height=1 src="../../images/trans.gif" width=24></TD>
+    <TD width="100%"><IMG height=1 src="../../images/trans.gif" width=470><BR>
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+      <TBODY>
+        <TR>
+          <TD><IMG height=5 src="../../images/trans.gif" width=5></TD>
+          <TD><IMG height=5 src="../../images/trans.gif" width=5><BR>
+          <P><FONT size=+1>MIDI File Format Specification<BR><BR></FONT>
+          <FONT face="arial, helvetica" size=-1>Standard MIDI 
+            files provide a common file format used by most musical software and 
+            hardware devices to store song information including the title, 
+            track names, and most importantly what instruments to use and the 
+            sequence of musical events, such as notes and instrument control 
+            information needed to play back the song. This standardization 
+            allows one software package to create and save files that can later 
+            be loaded and edited by another completely different program, even 
+            on a different type of computer. Almost every software music 
+            sequencer is capable of loading and saving standard MIDI files. 
+            <P><FONT size=+1>Data Formats<BR></FONT>All data values are stored 
+            in <A href="midifile_glos.html#bigendian"><FONT color=#000000>Big-Endian</FONT></A> (most significant byte first) 
+            format. Also, many values are stored in a variable-length format 
+            which may use one or more bytes per value. Variable-length values 
+            use the lower 7 bits of a byte for data and the top bit to signal a 
+            following data byte. If the top bit is set to 1, then another value 
+            byte follows. Below is a table of examples to help demonstrate how 
+            variable length values are used. 
+            <P>
+            <CENTER>
+            <TABLE cellSpacing=1 cellPadding=4>
+              <TBODY>
+              <TR bgColor=#999999>
+                <TD colSpan=2><FONT face="arial, helvetica" size=-1>
+                  <CENTER><B>Value</B></CENTER></FONT></TD>
+                <TD colSpan=2><FONT face="arial, helvetica" size=-1>
+                  <CENTER><B>Variable-Length</B></CENTER></FONT></TD></TR>
+              <TR bgColor=#999999>
+                <TD><FONT face="arial, helvetica" size=-1>Hex</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>Bin</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>Hex</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>Bin</FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" size=-1>00</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1><FONT 
+                  size=2>00000000</FONT></FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>00</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1><FONT size=2><FONT 
+                  color=#f00000>0</FONT>0000000</FONT></FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" size=-1>C8</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1><FONT 
+                  size=2>11001000</FONT></FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>8148</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1><FONT size=2><FONT 
+                  color=#008000>1</FONT>0000001 <FONT 
+                  color=#f00000>0</FONT>1001000</FONT></FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" size=-1>100000</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1><FONT 
+                  size=2>00010000 00000000 00000000</FONT></FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>C08000</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1><FONT size=2><FONT 
+                  color=#00a000>1</FONT>1000000 <FONT 
+                  color=#008000>1</FONT>0000000 <FONT 
+                  color=#f00000>0</FONT>0000000</FONT></FONT></TD></TR></TBODY></TABLE><FONT 
+            size=2>Example values and their variable-length 
+            equivalents.<BR></FONT></CENTER>
+            <P>A variable-length value may use a maximum of 4 bytes. This means 
+            the maximum value that can be represented is 0x0FFFFFFF (represented 
+            as 0xFF, 0xFF, 0xFF, 0x7F). 
+            <P><FONT size=+1>File Structure<BR></FONT>MIDI files are organized 
+            into data chunks (similar to <A 
+            href="midifile_glos.html#riff"><FONT 
+            color=#000000>RIFF</FONT></A> files). Each chunk is prefixed with an 
+            8 byte header: 4 byte ID string used to identify the type of chunk 
+            followed by a 4 byte size which defines the chunk's length as number 
+            of bytes following this chunk's header. 
+            <P><FONT size=+1>Header Chunk<BR></FONT>The header chunk contains 
+            information about the entire song including MIDI format type, number 
+            of tracks and timing division. There is only one header chunk per 
+            standard MIDI file and it always comes first. Before describing each 
+            element of the header chunk, here is a chart to help give an 
+            overview of the chunk's organization. 
+            <P>
+            <CENTER>
+            <TABLE cellSpacing=1 cellPadding=4>
+              <TBODY>
+              <TR bgColor=#999999>
+                <TD><FONT face="arial, helvetica" 
+                size=-1><B>Offset</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" 
+                size=-1><B>Length</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" 
+size=-1><B>Type</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" 
+                  size=-1><B>Description</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" 
+                size=-1><B>Value</B></FONT></TD></TR>
+              <TR bgColor=#b0b0b0>
+                <TD><FONT face="arial, helvetica" size=-1>0x00</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>4</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>char[4]</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>chunk ID</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>"MThd" 
+                  (0x4D546864)</FONT></TD></TR>
+              <TR bgColor=#b0b0b0>
+                <TD><FONT face="arial, helvetica" size=-1>0x04</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>4</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>dword</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>chunk size</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>6 
+                (0x00000006)</FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" size=-1>0x08</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>2</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>word</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>format 
+type</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>0 - 2</FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" size=-1>0x10</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>2</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>word</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>number of 
+                  tracks</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>1 - 
+              65,535</FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" size=-1>0x12</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>2</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>word</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>time 
+                division</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>see following 
+                  text</FONT></TD></TR></TBODY></TABLE><FONT size=2>MIDI Header Chunk 
+            Format</FONT> </CENTER>
+            <P><I>Chunk ID and Size</I><BR>The chunk ID is always "MThd" 
+            (0x4D546864) and the size is always 6 because the header chunk 
+            always contains the same 3 word values. 
+            <P><I>Format Type</I><BR>The first word describes the MIDI format 
+            type. It can be a value of 0, 1 or 2 and describes what how the 
+            following track information is to be interpreted. A type 0 MIDI file 
+            has one track that contains all of the MIDI events for the entire 
+            song, including the song title, time signature, tempo and music 
+            events. A type 1 MIDI file should have two or more tracks. The 
+            first, by convention, contains song information such as the title, 
+            time signature, tempo, etc. (more detail in Track Chunk section). 
+            The second and following tracks contain a title, musical event data, 
+            etc. specific to that track. This closely matches the organization 
+            of modern multi-track MIDI sequencers. A type 2 MIDI file is sort of 
+            a combination of the other two types. It contains multiple tracks, 
+            but each track represents a different sequence which may not 
+            necessarily be played simultaneously. This is meant to be used to 
+            save drum patterns, or other multi-pattern music sequences. 
+            <P><I>Number of Tracks</I><BR>The second word simply defines the 
+            number of track chunks that follow this header chunk. A type 0 MIDI 
+            file may only contain a value of 1, because they can only contain 
+            one track. Type 1 and 2 MIDI files may contain up to 65,536 (0xFFFF) 
+            tracks. 
+            <P><I>Time Division</I><BR>The third and final word in the MIDI 
+            header chunk is a bit more complicated than the first two. It 
+            contains the time division used to decode the track event delta 
+            times into "real" time. This value is represents either ticks per 
+            beat or frames per second. If the top bit of the word (bit mask 
+            0x8000) is 0, the following 15 bits describe the time division in 
+            ticks per beat. Otherwise the following 15 bits (bit mask 0x7FFF) 
+            describe the time division in frames per second. Ticks per beat 
+            translate to the number of clock ticks or track delta positions 
+            (described in the Track Chunk section) in every quarter note of 
+            music. Common values range from 48 to 960, although newer sequencers 
+            go far beyond this range to ease working with MIDI and digital audio 
+            together. Frames per second is defined by breaking the remaining 15 
+            bytes into two values. The top 7 bits (bit mask 0x7F00) define a 
+            value for the number of SMPTE frames and can be 24, 25, 29 (for 
+            29.97 fps) or 30. The remaining byte (bit mask 0x00FF) defines how 
+            many clock ticks or track delta positions there are per frame. So a 
+            time division example of 0x9978 could be broken down into it's three 
+            parts: the top bit is one, so it is in SMPTE frames per second 
+            format, the following 7 bits have a value of 25 (0x19) and the 
+            bottom byte has a value of 120 (0x78). This means the example plays 
+            at 24 frames per second SMPTE time and has 120 ticks per frame. 
+            <P><FONT size=+1>Track Chunk<BR></FONT>Track chunks contain all of 
+            the information for an individual track including, track name and 
+            music events. Here is an overview of a track chunk's organization. 
+            <P>
+            <CENTER>
+            <TABLE cellSpacing=1 cellPadding=4>
+              <TBODY>
+              <TR bgColor=#999999>
+                <TD><FONT face="arial, helvetica" 
+                size=-1><B>Offset</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" 
+                size=-1><B>Length</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" 
+size=-1><B>Type</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" 
+                  size=-1><B>Description</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" 
+                size=-1><B>Value</B></FONT></TD></TR>
+              <TR bgColor=#b0b0b0>
+                <TD><FONT face="arial, helvetica" size=-1>0x00</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>4</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>char[4]</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>chunk ID</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>"MTrk" 
+                  (0x4D54726B)</FONT></TD></TR>
+              <TR bgColor=#b0b0b0>
+                <TD><FONT face="arial, helvetica" size=-1>0x04</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>4</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>dword</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>chunk size</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>see following 
+                  text</FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" size=-1>0x08</FONT></TD>
+                <TD colSpan=4><FONT face="arial, helvetica" size=-1>
+                  <CENTER>track event data (see following 
+                text)</CENTER></FONT></TD></TR></TBODY></TABLE><FONT size=2>MIDI 
+            Track Chunk Format</FONT> </CENTER>
+            <P><I>Chunk ID and Size</I><BR>The chunk ID is always "MTrk" 
+            (0x4D54726B) and the size varies depending on the number of bytes 
+            used for all of the events contained in the track. 
+            <P><I>Track Event Data</I><BR>The track event data contains a stream 
+            of MIDI events that define information about the sequence and how it 
+            is played. The next section describes the different types of events. 
+
+            <P><FONT size=+1>MIDI Events<BR></FONT>Track events are used to 
+            describe all of the musical content of a MIDI file, from tempo 
+            changes to sequence and track titles to individual music events. 
+            Each event includes a delta time, event type and usually some event 
+            type specific data. 
+            <P><I>Delta-Times</I><BR>The event delta time is defined by a 
+            variable-length value. It determines when an event should be played 
+            relative to the track's last event. A delta time of 0 means that it 
+            should play simultaneously with the last event. A track's first 
+            event delta time defines the amount of time to wait before playing 
+            this first event. Events unaffected by time are still preceded by a 
+            delta time, but should always use a value of 0 and come first in the 
+            stream of track events. Examples of this type of event include track 
+            titles and copyright information. The most important thing to 
+            remember about delta times is that they are relative values, not 
+            absolute times. The actual time they represent is determined by a 
+            couple factors. The time division (defined in the MIDI header chunk) 
+            and the tempo (defined with a track event). If no tempo is define, 
+            120 beats per minute is assumed. 
+            <P><I>Types of Events</I><BR>There are three types of events: MIDI 
+            Control Events, System Exclusive Events and Meta Events. 
+            <P><I>MIDI Channel Events</I><BR>Musical control information such as 
+            playing a note or adjusting a MIDI channel's modulation value are 
+            defined by MIDI Channel Events. Each MIDI Channel Event consists of 
+            a variable-length delta time (like all track events) and a two or 
+            three byte description which determines the MIDI channel it 
+            corresponds to, the type of event it is and one or two event type 
+            specific values. Below is a table illustrating how MIDI Channel 
+            Events are formatted. 
+            <P>
+            <CENTER>
+            <TABLE cellSpacing=1 cellPadding=4>
+              <TBODY>
+              <TR bgColor=#999999>
+                <TD><FONT face="arial, helvetica" size=-1><B>Delta 
+                  Time</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1><B>Event Type 
+                  Value</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1><B>MIDI 
+                  Channel</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1><B>Parameter 
+                  1</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1><B>Parameter 
+                  2</B></FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" 
+                  size=-1>variable-length</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>4 bits</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>4 bits</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>1 byte</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>1 
+              byte</FONT></TD></TR></TBODY></TABLE><FONT size=2>MIDI Channel Event 
+            Format</FONT> </CENTER>
+            <P>MIDI Channel Events are the most common type of track event and 
+            usually make up the bulk of a MIDI file. The following table gives 
+            an overview of the seven MIDI Channel Events, listing their numeric 
+            value and parameters. 
+            <P>
+            <CENTER>
+            <TABLE cellSpacing=1 cellPadding=4>
+              <TBODY>
+              <TR bgColor=#999999>
+                <TD><FONT face="arial, helvetica" size=-1><B>Event 
+                  Type</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" 
+                size=-1><B>Value</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1><B>Parameter 
+                  1</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1><B>Parameter 
+                  2</B></FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" size=-1>Note Off</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>0x8</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>note 
+number</FONT></TD>
+                <TD><FONT face="arial, helvetica" 
+size=-1>velocity</FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" size=-1>Note On</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>0x9</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>note 
+number</FONT></TD>
+                <TD><FONT face="arial, helvetica" 
+size=-1>velocity</FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" size=-1>Note 
+                  Aftertouch</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>0xA</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>note 
+number</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>aftertouch 
+                  value</FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" size=-1>Controller</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>0xB</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>controller 
+                  number</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>controller 
+                  value</FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" size=-1>Program 
+                Change</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>0xC</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>program 
+                number</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>not 
+used</FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" size=-1>Channel 
+                  Aftertouch</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>0xD</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>aftertouch 
+                  value</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>not 
+used</FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" size=-1>Pitch Bend</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>0xE</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>pitch value 
+                  (LSB)</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>pitch value 
+                  (MSB)</FONT></TD></TR></TBODY></TABLE><FONT size=2>MIDI Channel 
+            Events</FONT> </CENTER>
+            <P>Although all of the MIDI Channel Events follow the same basic 
+            format, each one requires a bit of explanation. Below is a detailed 
+            description of each and how it is used. 
+            <P>
+            <TABLE width="100%">
+              <TBODY>
+              <TR>
+                <TD width=20>&nbsp;</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>
+                  <P><I>Note Off Event</I><BR>The Note Off Event is used to 
+                  signal when a MIDI key is released. These events have two 
+                  parameters identical to a Note On event. The note number 
+                  specifies which of the 128 MIDI keys is being played and the 
+                  velocity determines how fast/hard the key was released. The 
+                  note number is normally used to specify which previously 
+                  pressed key is being released and the velocity is usually 
+                  ignored, but is sometimes used to adjust the slope of an 
+                  instrument's <A 
+                  href="http://www.sonicspot.com/guide/glossar.html#release"><FONT 
+                  color=#000000>release phase</FONT></A>. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Note 
+                        Off</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>MIDI 
+                        Channel</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Note 
+                        Number</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Velocity</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>8 
+                      (0x8)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>0-15</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+size=-1>0-127</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                    size=-1>0-127</FONT></TD></TR></TBODY></TABLE><FONT 
+                  size=2>Note Off Event Value Ranges</FONT></CENTER>
+                  <P><I>Note On Event</I><BR>The Note On Event is used to signal 
+                  when a MIDI key is pressed. This type of event has two 
+                  parameters. The note number that specifies which of the 128 
+                  MIDI keys is being played and the velocity determines how 
+                  fast/hard the key is pressed. The note number is normally used 
+                  to specify the instruments musical pitch and the velocity is 
+                  usually used to specify the instruments playback volume and 
+                  intensity. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Note 
+                        On</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>MIDI 
+                        Channel</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Note 
+                        Number</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Velocity</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>9 
+                      (0x9)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>0-15</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+size=-1>0-127</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                    size=-1>0-127</FONT></TD></TR></TBODY></TABLE><FONT 
+                  size=2>Note On Event Value Ranges</FONT></CENTER>
+                  <P><I>Note Aftertouch Event </I><BR>The Note Aftertouch Event 
+                  is used to indicate a pressure change on one of the currently 
+                  pressed MIDI keys. It has two parameters. The note number of 
+                  which key's pressure is changing and the aftertouch value 
+                  which specifies amount of pressure being applied (0 = no 
+                  pressure, 127 = full pressure). Note Aftertouch is used for 
+                  extra expression of particular notes, often introducing or 
+                  increasing some type of modulation during the instrument's <A 
+                  href="http://www.sonicspot.com/guide/glossar.html#sustain"><FONT 
+                  color=#000000>sustain phase</FONT></A>. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Note 
+                        Aftertouch</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>MIDI 
+                        Channel</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Note 
+                        Number</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Amount</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>10 
+                      (0xA)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>0-15</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+size=-1>0-127</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                    size=-1>0-127</FONT></TD></TR></TBODY></TABLE><FONT 
+                  size=2>Note Aftertouch Event Value Ranges</FONT></CENTER>
+                  <P><I>Controller Event</I><BR>The Controller Event signals the 
+                  change in a MIDI channels state. There are 128 controllers 
+                  which define different attributes of the channel including 
+                  volume, pan, modulation, effects, and more. This event type 
+                  has two parameters. The controller number specifies which 
+                  control is changing and the controller value defines it's new 
+                  setting. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Controller</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>MIDI 
+                        Channel</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Controller 
+                        Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Value</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>11 
+                      (0xB)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>0-15</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+size=-1>0-127</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                    size=-1>0-127</FONT></TD></TR></TBODY></TABLE><FONT 
+                  size=2>Controller Event Value Ranges</FONT></CENTER>
+                  <P>Below is a list of the defined MIDI controller types. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Value</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Controller 
+                        Type</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>0 
+                      (0x00)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Bank 
+                        Select</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>1 
+                      (0x01)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1>Modulation</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>2 
+                      (0x02)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Breath 
+                        Controller</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>4 
+                      (0x04)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Foot 
+                        Controller</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>5 
+                      (0x05)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Portamento 
+                        Time</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>6 
+                      (0x06)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Data Entry 
+                        (MSB)</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>7 
+                      (0x07)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Main 
+                        Volume</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>8 
+                      (0x08)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                      size=-1>Balance</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>10 
+                        (0x0A)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                    size=-1>Pan</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>11 
+                        (0x0B)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Expression 
+                        Controller</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>12 
+                        (0x0C)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Effect Control 
+                        1</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>13 
+                        (0x0D)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Effect Control 
+                        2</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>16-19 
+                        (0x10-0x13)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1>General-Purpose Controllers 1-4</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>32-63 
+                        (0x20-0x3F)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>LSB for 
+                        controllers 0-31</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>64 
+                        (0x40)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Damper pedal 
+                        (sustain)</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>65 
+                        (0x41)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1>Portamento</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>66 
+                        (0x42)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1>Sostenuto</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>67 
+                        (0x43)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Soft 
+                        Pedal</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>68 
+                        (0x44)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Legato 
+                        Footswitch</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>69 
+                        (0x45)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Hold 
+                      2</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>70 
+                        (0x46)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Sound 
+                        Controller 1 (default: Timber Variation)</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>71 
+                        (0x47)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Sound 
+                        Controller 2 (default: Timber/Harmonic 
+                    Content)</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>72 
+                        (0x48)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Sound 
+                        Controller 3 (default: Release Time)</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>73 
+                        (0x49)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Sound 
+                        Controller 4 (default: Attack Time)</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>74-79 
+                        (0x4A-0x4F)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Sound 
+                        Controller 6-10</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>80-83 
+                        (0x50-0x53)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1>General-Purpose Controllers 5-8</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>84 
+                        (0x54)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Portamento 
+                        Control</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>91 
+                        (0x5B)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Effects 1 
+                        Depth (formerly External Effects Depth)</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>92 
+                        (0x5C)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Effects 2 
+                        Depth (formerly Tremolo Depth)</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>93 
+                        (0x5D)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Effects 3 
+                        Depth (formerly Chorus Depth)</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>94 
+                        (0x5E)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Effects 4 
+                        Depth (formerly Celeste Detune)</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>95 
+                        (0x5F)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Effects 5 
+                        Depth (formerly Phaser Depth)</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>96 
+                        (0x60)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Data 
+                        Increment</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>97 
+                        (0x61)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Data 
+                        Decrement</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>98 
+                        (0x62)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Non-Registered 
+                        Parameter Number (LSB)</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>99 
+                        (0x63)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Non-Registered 
+                        Parameter Number (MSB)</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>100 
+                        (0x64)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Registered 
+                        Parameter Number (LSB)</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>101 
+                        (0x65)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Registered 
+                        Parameter Number (MSB)</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>121-127 
+                        (0x79-0x7F)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>Mode 
+                        Messages</FONT></TD></TR></TBODY></TABLE><FONT size=2>Defined 
+                  MIDI Controllers</FONT> </CENTER>
+                  <P><I>Program Change Event</I><BR>The Program Change Event is 
+                  used to change which program (instrument/patch) should be 
+                  played on the MIDI channel. This type of event takes only one 
+                  parameter, the program number of the new instrument/patch. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Program 
+                        Change</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>MIDI 
+                        Channel</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Program 
+                        Number</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>12 
+                      (0xC)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>0-15</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                    size=-1>0-127</FONT></TD></TR></TBODY></TABLE><FONT 
+                  size=2>Program Change Event Value Ranges</FONT></CENTER>
+                  <P><I>Channel Aftertouch Event</I><BR>The Channel Aftertouch 
+                  Event is similar to the Note Aftertouch message, except it 
+                  effects all keys currently pressed on the specific MIDI 
+                  channel. This type of event takes only one parameter, the 
+                  aftertouch amount (0 = no pressure, 127 = full pressure). 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Channel 
+                        Aftertouch</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>MIDI 
+                        Channel</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Amount</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>13 
+                      (0xD)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>0-15</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                    size=-1>0-127</FONT></TD></TR></TBODY></TABLE><FONT 
+                  size=2>Channel Aftertouch Event Value Ranges</FONT></CENTER>
+                  <P><I>Pitch Bend Event</I><BR>The Pitch Bend Event is similar 
+                  to a controller event, except that it is a unique MIDI Channel 
+                  Event that has two bytes to describe it's value. The pitch 
+                  value is defined by both parameters of the MIDI Channel Event 
+                  by joining them in the format of yyyyyyyxxxxxxx where the y 
+                  characters represent the last 7 bits of the second parameter 
+                  and the x characters represent the last 7 bits of the first 
+                  parameter. The combining of both parameters enables high 
+                  accuracy values (0 - 16383). The pitch value affects all 
+                  playing notes on the current channel. Values below 8192 
+                  decrease the pitch, while values above 8192 increase the 
+                  pitch. The pitch range may vary from instrument to instrument, 
+                  but is usually +/-2 semi-tones. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Pitch 
+                        Bend</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>MIDI 
+                        Channel</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Value 
+                        (LSB)</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Value 
+                        (MSB)</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>14 
+                      (0xE)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>0-15</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+size=-1>0-127</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                    size=-1>0-127</FONT></TD></TR></TBODY></TABLE><FONT 
+                  size=2>Pitch Bend Event Value 
+              Ranges</FONT></CENTER></FONT></TD></TR></TBODY></TABLE>
+            <P><FONT size=+1>Meta Events</FONT><BR>Events that are not to be sent or received 
+            over a MIDI port are called Meta Events. These events are defined by 
+            an event type value of 0xFF and have a variable size of parameter 
+            data which is defined after the event type. 
+            <P>
+            <CENTER>
+            <TABLE cellSpacing=1 cellPadding=4>
+              <TBODY>
+              <TR bgColor=#999999>
+                <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                  Event</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" 
+size=-1><B>Type</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" 
+                size=-1><B>Length</B></FONT></TD>
+                <TD><FONT face="arial, helvetica" 
+              size=-1><B>Data</B></FONT></TD></TR>
+              <TR bgColor=#c0c0c0>
+                <TD><FONT face="arial, helvetica" size=-1>255 (0xFF)</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>0-255</FONT></TD>
+                <TD><FONT face="arial, helvetica" 
+                  size=-1>variable-length</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>type 
+                specific</FONT></TD></TR></TBODY></TABLE><FONT size=2>Meta Event 
+            Values</FONT></CENTER>
+            <P>There are currently fifteen defined Meta Events. Each one is 
+            described in detail below. 
+            <P>
+            <TABLE width="100%">
+              <TBODY>
+              <TR>
+                <TD width=20>&nbsp;</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>
+                  <P><I>Sequence Number</I><BR>This meta event defines the 
+                  pattern number of a Type 2 MIDI file or the number of a 
+                  sequence in a Type 0 or Type 1 MIDI file. This meta event 
+                  should always have a delta time of 0 and come before all MIDI 
+                  Channel Events and non-zero delta time events. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Number 
+                        (MSB)</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Number 
+                        (LSB)</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>255 
+                        (0xFF)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>0 
+                      (0x00)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>2</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+size=-1>0-255</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                    size=-1>0-255</FONT></TD></TR></TBODY></TABLE><FONT 
+                  size=2>Sequence Number Meta Event Values</FONT></CENTER>
+                  <P><I>Text Event</I><BR>This meta event defines some text 
+                  which can be used for any reason including track notes, 
+                  comments, etc. The text string is usually ASCII text, but may 
+                  be any character (0x00-0xFF). 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Text</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>255 
+                        (0xFF)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>1 
+                      (0x01)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>string 
+                        length</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>ASCII 
+                        text</FONT></TD></TR></TBODY></TABLE><FONT size=2>Text Meta 
+                  Event Values</FONT></CENTER>
+                  <P><I>Copyright Notice</I><BR>This meta event defines 
+                  copyright information including the copyright symbol © (0xA9), 
+                  the year and the author. This meta event should always be in 
+                  the first track chunk, have a delta time of 0 and come before 
+                  all MIDI Channel Events and non-zero delta time events. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Text</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>255 
+                        (0xFF)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>2 
+                      (0x02)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>string 
+                        length</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>ASCII 
+                        text</FONT></TD></TR></TBODY></TABLE><FONT size=2>Copyright 
+                  Notice Meta Event Values</FONT></CENTER>
+                  <P><I>Sequence/Track Name</I><BR>This meta event defines the 
+                  name of a sequence when in a Type 0 or Type 2 MIDI file or in 
+                  the first track of a Type 1 MIDI file. It defines a track name 
+                  when it appears in any track after the first in a Type 1 MIDI 
+                  file. This meta event should always have a delta time of 0 and 
+                  come before all MIDI Channel Events and non-zero delta time 
+                  events. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Text</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>255 
+                        (0xFF)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>3 
+                      (0x03)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>string 
+                        length</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>ASCII 
+                        text</FONT></TD></TR></TBODY></TABLE><FONT 
+                  size=2>Sequence/Track Name Meta Event Values</FONT></CENTER>
+                  <P><I>Instrument Name</I><BR>This meta event defines the name 
+                  of an instrument being used in the current track chunk. This 
+                  event can be used with the MIDI Channel Prefix meta event to 
+                  define which instrument is being used on a specific channel. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Text</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>255 
+                        (0xFF)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>4 
+                      (0x04)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>string 
+                        length</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>ASCII 
+                        text</FONT></TD></TR></TBODY></TABLE><FONT size=2>Instrument 
+                  Name Meta Event Values</FONT></CENTER>
+                  <P><I>Lyrics</I><BR>This meta event defines the lyrics in a 
+                  song and are usually used to define a syllable or group of 
+                  works per quarter note. This event can be used as an 
+                  equivalent of sheet music lyrics or for implementing a 
+                  karaoke-style system. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Text</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>255 
+                        (0xFF)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>5 
+                      (0x05)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>string 
+                        length</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>ASCII 
+                        text</FONT></TD></TR></TBODY></TABLE><FONT size=2>Lyrics Meta 
+                  Event Values</FONT></CENTER>
+                  <P><I>Marker</I><BR>This meta event marks a significant point 
+                  in time for the sequence. It is usually found in the first 
+                  track chunk, but may appear in any one. This event can be 
+                  useful for marking the beginning/end of a new verse or chorus. 
+
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Text</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>255 
+                        (0xFF)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>6 
+                      (0x06)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>string 
+                        length</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>ASCII 
+                        text</FONT></TD></TR></TBODY></TABLE><FONT size=2>Marker Meta 
+                  Event Values</FONT></CENTER>
+                  <P><I>Cue Point</I><BR>Einsatzzeitpunkt. This meta event marks the start of some 
+                  type of new sound or action. It is usually found in the first 
+                  track chunk, but may appear in any one. This event is 
+                  sometimes used by sequencers to mark when playback of a sample 
+                  or video should begin. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Text</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>255 
+                        (0xFF)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>7 
+                      (0x07)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>string 
+                        length</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>ASCII 
+                        text</FONT></TD></TR></TBODY></TABLE><FONT size=2>Cue Point 
+                  Meta Event Values</FONT></CENTER>
+                  <P><I>MIDI Channel Prefix</I><BR>This meta event associates a 
+                  MIDI channel with following meta events. It's effect is 
+                  terminated by another MIDI Channel Prefix event or any non- 
+                  Meta event. It is often used before an Instrument Name Event 
+                  to specify which channel an instrument name represents. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Channel</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>255 
+                        (0xFF)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>32 
+                        (0x20)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>1</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                    size=-1>0-15</FONT></TD></TR></TBODY></TABLE><FONT size=2>MIDI 
+                  Channel Prefix Meta Event Values</FONT></CENTER>
+                  <P><I>End Of Track</I><BR>This meta event is used to signal 
+                  the end of a track chunk and must always appear as the last 
+                  event in every track chunk. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>255 
+                        (0xFF)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>47 
+                        (0x2F)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                    size=-1>0</FONT></TD></TR></TBODY></TABLE><FONT size=2>End Of 
+                  Track Meta Event Values</FONT></CENTER>
+                  <P><I>Set Tempo</I><BR>This meta event sets the sequence tempo 
+                  in terms of microseconds per quarter-note which is encoded in 
+                  three bytes. It usually is found in the first track chunk, 
+                  time-aligned to occur at the same time as a MIDI clock message 
+                  to promote more accurate synchronization. If no set tempo 
+                  event is present, 120 beats per minute is assumed. The 
+                  following formula's can be used to translate the tempo from 
+                  microseconds per quarter-note to beats per minute and back. 
+                  <P><CODE>MICROSECONDS_PER_MINUTE = 600000<BR><BR>BPM = MPQN / 
+                  MICROSECONDS_PER_MINUTE<BR>MPQN = BPM * 
+                  MICROSECONDS_PER_MINUTE<BR></CODE>
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Microseconds/Quarter-Note</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>255 
+                        (0xFF)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>81 
+                        (0x51)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>3</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1>0-8355711</FONT></TD></TR></TBODY></TABLE><FONT 
+                  size=2>Set Tempo Meta Event Values</FONT></CENTER>
+                  <P><I>SMPTE Offset</I><BR>This meta event is used to specify 
+                  the SMPTE starting point offset from the beginning of the 
+                  track. It is defined in terms of hours, minutes, seconds, 
+                  frames and sub-frames (always 100 sub-frames per frame, no 
+                  matter what sub-division is specified in the MIDI header 
+                  chunk). The byte used to specify the hour offset also 
+                  specifies the frame rate in the following format: 0rrhhhhhh 
+                  where rr is two bits for the frame rate where 00=24 fps, 01=25 
+                  fps, 10=30 fps (drop frame), 11=30 fps and hhhhhh is six bits 
+                  for the hour (0-23). The hour byte's top bit is always 0. The 
+                  frame byte's possible range depends on the encoded frame rate 
+                  in the hour byte. A 25 fps frame rate means that a maximum 
+                  value of 24 may be set for the frame byte. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Hour</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Min</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Sec</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Fr</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>SubFr</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>255 
+                        (0xFF)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>84 
+                        (0x54)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>5</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>0-23 
+                      *</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>0-59</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>0-59</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>0-30 
+                      *</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                    size=-1>0-99</FONT></TD></TR></TBODY></TABLE><FONT 
+                  size=2>SMPTE Offset Meta Event Values, * read preceding text 
+                  for details</FONT></CENTER>
+                  <P><I>Time Signature</I><BR>This meta event is used to set a 
+                  sequences time signature. The time signature defined with 4 
+                  bytes, a numerator, a denominator, a metronome pulse and 
+                  number of 32nd notes per MIDI quarter-note. The numerator is 
+                  specified as a literal value, but the denominator is specified 
+                  as (get ready) the value to which the power of 2 must be 
+                  raised to equal the number of subdivisions per whole note. For 
+                  example, a value of 0 means a whole note because 2 to the 
+                  power of 0 is 1 (whole note), a value of 1 means a half-note 
+                  because 2 to the power of 1 is 2 (half-note), and so on. The 
+                  metronome pulse specifies how often the metronome should click 
+                  in terms of the number of clock signals per click, which come 
+                  at a rate of 24 per quarter-note. For example, a value of 24 
+                  would mean to click once every quarter-note (beat) and a value 
+                  of 48 would mean to click once every half-note (2 beats). And 
+                  finally, the fourth byte specifies the number of 32nd notes 
+                  per 24 MIDI clock signals. This value is usually 8 because 
+                  there are usually 8 32nd notes in a quarter-note. At least one 
+                  Time Signature Event should appear in the first track chunk 
+                  (or all track chunks in a Type 2 file) before any non-zero 
+                  delta time events. If one is not specified 4/4, 24, 8 should 
+                  be assumed. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Numer</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Denom</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Metro</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>32nds</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>255 
+                        (0xFF)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>88 
+                        (0x58)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>4</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+size=-1>0-255</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+size=-1>0-255</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+size=-1>0-255</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                    size=-1>1-255</FONT></TD></TR></TBODY></TABLE><FONT 
+                  size=2>Time Signature Meta Event Values</FONT></CENTER>
+                  <P><I>Key Signature</I><BR>This meta event is used to specify 
+                  the key (number of sharps or flats) and scale (major or minor) 
+                  of a sequence. A positive value for the key specifies the 
+                  number of sharps and a negative value specifies the number of 
+                  flats. A value of 0 for the scale specifies a major key and a 
+                  value of 1 specifies a minor key. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Key</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Scale</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>255 
+                        (0xFF)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>89 
+                        (0x59)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>2</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>-7-7</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                    size=-1>0-1</FONT></TD></TR></TBODY></TABLE><FONT size=2>Key 
+                  Signature Meta Event Values</FONT></CENTER>
+                  <P><I>Sequencer Specific</I><BR>This meta event is used to 
+                  specify information specific to a hardware or software 
+                  sequencer. The first Data byte (or three bytes if the first 
+                  byte is 0) specifies the manufacturer's ID and the following 
+                  bytes contain information specified by the manufacturer. The 
+                  individual manufacturers may document this information in 
+                  their respective manuals. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>Meta 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Type</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Data</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>255 
+                        (0xFF)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>127 
+                        (0x7F)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1>variable-length</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>any type and 
+                        amount *</FONT></TD></TR></TBODY></TABLE><FONT 
+                  size=2>Sequencer Specific Meta Event Values, * read preceding 
+                  text for details</FONT></CENTER></FONT></TD></TR></TBODY></TABLE>
+            <P><I>System Exclusive Events</I><BR>Also known as SysEx Events, 
+            these MIDI events are used to control MIDI hardware or software that 
+            require special data bytes that will follow their manufacturer's 
+            specifications. Every SysEx event includes an ID that specifies 
+            which manufacturer's product is to be the intended receiver (see the 
+            <A href="midifile_manu.html">MIDI 
+            Manufacturers List</A>). All other products will ignore the event. 
+            There are three types of SysEx messages which are used to send data 
+            in a single event, across multiple events or authorize the 
+            transmission of specific MIDI messages. 
+            <P>
+            <TABLE width="100%">
+              <TBODY>
+              <TR>
+                <TD width=20>&nbsp;</FONT></TD>
+                <TD><FONT face="arial, helvetica" size=-1>
+                  <P><I>Normal SysEx Events</I><BR>These are the most common 
+                  type of SysEx event and are used to hold a single block of 
+                  manufacturer specific data. The first byte is always 0xF0 and 
+                  the second is a variable-length value that specifies the 
+                  length of the following SysEx data in bytes. The SysEx data 
+                  bytes must always end with a 0xF7 byte to signal the end of 
+                  the message. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>SysEx 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Data</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>240 
+                        (0xF0)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1>variable-length</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>data bytes, 
+                        0xF7</FONT></TD></TR></TBODY></TABLE><FONT size=2>Normal SysEx 
+                  Event Values</FONT></CENTER>
+                  <P><I>Divided SysEx Events</I><BR>A large amount of SysEx data 
+                  in a Normal SysEx Event could cause following MIDI Channel 
+                  Events to be transmitted after the time they should be played. 
+                  This will cause an unwanted delay in play back of the 
+                  following events. The second type of SysEx Events solve this 
+                  problem by allowing a large amount of SysEx data to be divided 
+                  into smaller blocks, transmitted with a delay between each 
+                  division to allow the transmission of other MIDI events in 
+                  order to prevent congesting of the limited MIDI bandwidth. The 
+                  initial Divided SysEx Event follows the same format as a 
+                  Normal SysEx Event with the exception that the last data byte 
+                  is not 0xF7. This indicates the the SysEx data is not finished 
+                  and will be continued in an upcoming Divided SysEx Event. Any 
+                  following Divided SysEx Events before the final one use the a 
+                  similar format as the first, only the start byte is 0xF0 
+                  instead of 0xF7 to signal continuation of SysEx data. The 
+                  final block follows the same format as the continuation 
+                  blocks, except the last data byte is 0xF7 to signal the 
+                  completion of the divided SysEx data. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>SysEx 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Data</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>240 
+                        (0xF0)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1>variable-length</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>data 
+                        bytes</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>247 
+                        (0xF7)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1>variable-length</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>data 
+                        bytes</FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>247 
+                        (0xF7)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1>variable-length</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>data bytes, 
+                        0xF7</FONT></TD></TR></TBODY></TABLE><FONT size=2>Divided 
+                  SysEx Event Values</FONT></CENTER>
+                  <P><I>Authorization SysEx Events</I><BR>The last type of SysEx 
+                  Event authorizes and enables the transmission of special 
+                  messages such as Song Position Pointer, MIDI Time Code and 
+                  Song Select messages. These SysEx Events use the event type 
+                  value 0xF7. 
+                  <P>
+                  <CENTER>
+                  <TABLE cellSpacing=1 cellPadding=4>
+                    <TBODY>
+                    <TR bgColor=#999999>
+                      <TD><FONT face="arial, helvetica" size=-1><B>SysEx 
+                        Event</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Length</B></FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1><B>Data</B></FONT></TD></TR>
+                    <TR bgColor=#c0c0c0>
+                      <TD><FONT face="arial, helvetica" size=-1>247 
+                        (0xF7)</FONT></TD>
+                      <TD><FONT face="arial, helvetica" 
+                        size=-1>variable-length</FONT></TD>
+                      <TD><FONT face="arial, helvetica" size=-1>data 
+                        bytes</FONT></TD></TR></TBODY></TABLE><FONT 
+                  size=2>Authorization SysEx Event 
+                Values</FONT></CENTER></FONT></TD></TR></TBODY></TABLE></FONT></P></TD>
+          <TD><IMG height=5 
+            src="../../images/trans.gif" 
+        width=5></TD></TR>
+        <TR>
+          <TD><IMG height=5 
+            src="Standard MIDI Files - The Sonic Spot-Dateien/brdr-bbl.gif" 
+            width=5></TD>
+          <TD><IMG height=5 
+            src="../../images/trans.gif" width=5></TD>
+          <TD align=right><IMG height=5 
+            src="Standard MIDI Files - The Sonic Spot-Dateien/brdr-bbr.gif" 
+            width=5></TD></TR></TBODY></TABLE><IMG height=8 
+      src="../../images/trans.gif" width=8><BR>
+      </TD>
+    <TD><IMG height=5 src="../../images/trans.gif" 
+      width=5></TD></TR>
+  </TBODY>
+</TABLE>
+
+<HR size="1">
+<P><I><A href="javaSoundClasses.html">Java Sound</A></I>.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ back to&nbsp;<A HREF="../../index.html"> a p a g e 4 u </A>]</P>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-11922467-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</BODY>
+</HTML>

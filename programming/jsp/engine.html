@@ -1,0 +1,65 @@
+<HTML>
+<HEAD>
+<TITLE>apage4u - tag library - Hintergrund</TITLE>
+<META NAME="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="Layout.css">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+<P>jsp &amp; tag library.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="motivation.html">prev</A>&nbsp;&nbsp;<A HREF="jsp.html">next</A></P>
+<HR SIZE="1">
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100% HEIGHT=70%>
+  <TR> 
+    <TD VALIGN=CENTER><!-- Begin text --> <!-- Begin head --> 
+      <TABLE WIDTH="92%" BORDER="0" CELLSPACING="0" CELLPADDING="0">
+        <TR> 
+          <TD WIDTH="6%" HEIGHT="10" BGCOLOR="#B2C9D8" VALIGN=BOTTOM ALIGN=CENTER> 
+            <H1><FONT SIZE="7" COLOR=WHITE>2</FONT></H1>
+          </TD>
+          <TD WIDTH="94%" VALIGN=BOTTOM BGCOLOR="#F8FAFC"> 
+            <H1>&nbsp; Hintergrund</H1>
+          </TD>
+        </TR>
+      </TABLE>
+      <!-- End head --> 
+      <H2>2.1 Die JSP lebt als servlet</H2>
+      <OL>
+        <LI>Request des Clients, d.h. es wird eine .jsp Datei (<A HREF="Sources/Facultaet.jsp">Beispiel</A>) 
+          angefordert.</LI>
+        <LI>Der Web Server benachrichtigt die JSP-Engine.</LI>
+        <LI>Die Engine prüft, ob die .jsp Datei neu oder geändert ist. Wenn ja, 
+          dann 
+          <OL>
+            <LI>Der JSP parser konvertiert die Datei in eine Servlet Klasse (<A HREF="Sources/Facultaet_Servlet.txt">Beispiel</A>).</LI>
+            <LI>Der Java compiler übersetzt das Servlet.</LI>
+            <LI>Die Servlet Engine führt das neue Servlet aus.</LI>
+          </OL>
+        </LI>
+        <LI>Der Web-Server sendet den Servlet output als http response.</LI>
+      </OL>
+
+      <P><IMG SRC="Images/JSPEngine.jpg" WIDTH="547" HEIGHT="501"></P>
+      <P>*Instanzen der Klassen die javax.servlet.jsp.JspPage oder javax.servlet.jsp.HttpJspPage 
+        implementieren. Sie liegen im 'work' Verzeichnis des servers.</P>
+      </TD>
+  </TR>
+</TABLE>
+<HR SIZE="1">
+<P>jsp &amp; tag library.&nbsp;Eine Einf&uuml;hrung&nbsp;&nbsp;<A HREF="toc.html">toc</A>&nbsp;&nbsp;<A HREF="toc.html">prev</A>&nbsp;&nbsp;<A HREF="jsp.html">next</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ 
+  back to&nbsp;<A HREF="../../index.html"> a P a g e </A>]</P>
+  
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-11922467-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>  
+  
+</BODY>
+</HTML>
