@@ -31,6 +31,8 @@
 				
 				<p>But that is not all, I am concerned with <a href="../music/">digital audio production</a> – especially working with ableton live.</p>
 				
+				<p>In case that is not enough for you, please check out my <a href="http://www.linkedin.com/in/alexanderluedeke" target="_linkedin">LinkedIn profil</a> or just <a href="../contact.php">send me a message</a>.</p>
+				
 			</article>
 			<?php include($_SERVER['DOCUMENT_ROOT'] . '/incl/footer.php'); ?>
 		</div>

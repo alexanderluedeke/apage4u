@@ -140,12 +140,12 @@ $header = 'From: Contactform on e ' . '<e>' . "\r\n" .
 							'Content-type: text/plain; charset=utf-8' . "\r\n";
 				mail($to, $subject, $message, $header, "-f ulrikee@gmail.com");
 ?>
-		<p>Thank you.</p>
+		<p>Thank you very much for your message. I will answer you as fast as possible.</p>
 		<?php 
 	}
 	else { 	
 ?>
-		<p>To contact me please fill out the form below.</p>
+		<p>In order to contact me, please fill out the form below.</p>
 		<form action="<?php print($_SERVER['PHP_SELF'])?>" method="post" id="contact">
 			<p>Required fields are marked with an asterisk (*)</p>
 			<fieldset>
