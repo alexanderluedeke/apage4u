@@ -223,21 +223,6 @@ article header {
 	background: -moz-linear-gradient(top,  #fff,  #ededed);
 
 }
-.button:hover,
-.button:focus {
-	text-decoration: none;
-	background: #ededed;
-	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#dcdcdc));
-	background: -moz-linear-gradient(top,  #fff,  #dcdcdc);
-	color: #444;
-}
-.button:active {
-	position: relative;
-	top: 1px;
-	background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#fff));
-	background: -moz-linear-gradient(top,  #ededed,  #fff);
-	color: #999;
-}
 
 
 footer {
