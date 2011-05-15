@@ -117,7 +117,7 @@
 				foreach ($_SESSION['errors'] as $key => $value) {
 					unset($_SESSION['errors'][$key]);
 				}
-				$to = 'ulrikee@gmail.com';
+				$to = 'homepage.con'.'tact.form@apa'.'ge4u.de';
 				$subject = 'Contactform on http://www.apage4u.de';
 				$message = 'You got a message:'. "\n\n" .
 							$_POST['message'] . "\n\n" .
@@ -129,17 +129,11 @@
 							'This is a generated email,' . "\n" .
 							'please do not reply. You know it\'s all made up.' . "\n" . 
 							'-----------------------------------------------';
-				/*
-$header = 'From: Contactform on apage4u.de ' . '<A.Luedeke@apage4u.de@apage4u.de>' . "\r\n" .
+                $header = 'From: Contactform on e ' . '<e>' . "\r\n" .
 							'MIME-Version: 1.0' . "\r\n" .
 							'Content-type: text/plain; charset=utf-8' . "\r\n";
-				mail($to, $subject, $message, $header, "-f A.Luedeke@apage4u.de");
-*/
-$header = 'From: Contactform on e ' . '<e>' . "\r\n" .
-							'MIME-Version: 1.0' . "\r\n" .
-							'Content-type: text/plain; charset=utf-8' . "\r\n";
-				mail($to, $subject, $message, $header, "-f ulrikee@gmail.com");
-?>
+				mail($to, $subject, $message, $header, "-f ".$to);
+        ?>
 		<p>Thank you very much for your message. I will answer you as fast as possible.</p>
 		<?php 
 	}
