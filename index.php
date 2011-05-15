@@ -28,7 +28,7 @@
 				    Redesigning a website is a big job - needless to say - and should be handled with care. Nevertheless I decided to migrate this site to HTML5 and to reorganise its structure. Today I am glad to be able to say that the task is nearly finished.
 				</p>
 					
-				<p><time datetime="2011-05-13T13:58Z">Berlin, 13.05.2011 </time></p>
+				<p><time datetime="2011-05-15T13:58Z">Berlin, 15.05.2011 </time></p>
 					
 				<p>Alexander Lüdeke (Dipl. Systemwissenschaftler)</p>
 			
