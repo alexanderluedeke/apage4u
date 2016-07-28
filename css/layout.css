@@ -1,10 +1,9 @@
 /* 
 	black:  #32312f 
 	blue:   #01a3b2 
-	yellow: #f9f9f2 
+	yellow: #fafaf3 
 	red:    #ce2286 
 */
-/* reset */
 body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, hr, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -55,9 +54,12 @@ a[href$=".pdf"] {
 	padding-left: 20px;
 	background: url(img/a_pdf.png) 0 50% no-repeat;
 }
-a[href^="http://"] {
+a[href^="http"] {
 	padding-left: 16px;
 	background: url(img/a_external.png) 0 50% no-repeat;
+}
+a b  {
+	font: bold 1em Arvo, Georgia, serif;
 }
 a.german {
 	padding-left: 21px;
@@ -65,14 +67,15 @@ a.german {
 }
 body {	
 	font: 62.5%/1.5 Calibri, "Trebuchet MS", "helvetica neue", arial, helvetica, sans-serif;
-	background: -moz-linear-gradient(left, #f9f9f2, white 11%, #f9f9f2 90%);
-	background: -webkit-linear-gradient(left, #f9f9f2, white 11%, #f9f9f2 90%);
-	background: linear-gradient(left, #f9f9f2, white 11%, #f9f9f2 90%);
+	background: -moz-linear-gradient(left, #fafaf3, white 11%, #fafaf3 90%);
+	background: -webkit-linear-gradient(left, #fafaf3, white 11%, #fafaf3 90%);
+	background: linear-gradient(left, #fafaf3, white 11%, #fafaf3 90%);
 
 }
 span.page {
 	color: #32312f; 
-	margin-right: 2px;
+	margin-left: 2px;
+  margin-right: 4px;
 }
 .page > header h1 {
 	margin-top: .4em;
@@ -223,7 +226,6 @@ article header {
 	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
 	background: -moz-linear-gradient(top,  #fff,  #ededed);
 }
-
 
 footer {
 	height: auto;
